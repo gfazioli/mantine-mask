@@ -1,10 +1,10 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
-import { Box, rem, useMantineTheme } from '@mantine/core';
+import { Box, rem, useMantineTheme, type BoxProps } from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
-import { JsonTree, type JsonTreeProps } from './JsonTree';
-import classes from './JsonTreeMask.module.css';
+import classes from './Mask.module.css';
 
-export interface JsonTreeMaskProps extends JsonTreeProps {
+export interface MaskProps extends BoxProps {
+  children?: React.ReactNode;
   /** Enable cursor-follow mask. When false, the mask uses static coordinates. @default true */
   withCursorMask?: boolean;
 
@@ -19,26 +19,21 @@ export interface JsonTreeMaskProps extends JsonTreeProps {
 
   /** Background color for the masked surface. @default theme.colors.dark[8] */
   maskBackground?: string;
-
-  /** Optional class name for the wrapper element. */
-  wrapperClassName?: string;
-
-  /** Optional styles for the wrapper element. */
-  wrapperStyle?: CSSProperties;
 }
 
 const defaultMaskRadius = 240;
 
-export const JsonTreeMask = React.forwardRef<HTMLDivElement, JsonTreeMaskProps>((props, ref) => {
+export const Mask = React.forwardRef<HTMLDivElement, MaskProps>((props, ref) => {
   const {
     withCursorMask = true,
     maskX = 50,
     maskY = 50,
     maskRadius = defaultMaskRadius,
     maskBackground,
-    wrapperClassName,
-    wrapperStyle,
-    ...jsonTreeProps
+    className,
+    style,
+    children,
+    ...others
   } = props;
 
   const theme = useMantineTheme();
@@ -108,31 +103,30 @@ export const JsonTreeMask = React.forwardRef<HTMLDivElement, JsonTreeMaskProps>(
   const radiusValue = typeof maskRadius === 'number' ? rem(maskRadius) : maskRadius;
   const maskVariables: CSSProperties = withCursorMask
     ? ({
-        '--json-tree-mask-x': `${smoothPosition.x}px`,
-        '--json-tree-mask-y': `${smoothPosition.y}px`,
+        '--mask-x': `${smoothPosition.x}px`,
+        '--mask-y': `${smoothPosition.y}px`,
       } as CSSProperties)
     : ({
-        '--json-tree-mask-x': `${maskX}%`,
-        '--json-tree-mask-y': `${maskY}%`,
+        '--mask-x': `${maskX}%`,
+        '--mask-y': `${maskY}%`,
       } as CSSProperties);
 
   return (
     <Box
       ref={mergedRef}
-      className={[classes.root, wrapperClassName].filter(Boolean).join(' ')}
+      className={[classes.root, className].filter(Boolean).join(' ')}
       style={{
-        '--json-tree-mask-radius': radiusValue,
-        '--json-tree-mask-background': maskBackground ?? theme.colors.dark[8],
+        '--mask-radius': radiusValue,
+        '--mask-background': maskBackground ?? theme.colors.dark[8],
         ...maskVariables,
-        ...wrapperStyle,
+        ...style,
       }}
       data-with-cursor={withCursorMask}
+      {...others}
     >
-      <div className={classes.mask}>
-        <JsonTree {...jsonTreeProps} />
-      </div>
+      <div className={classes.mask}>{children}</div>
     </Box>
   );
 });
 
-JsonTreeMask.displayName = 'JsonTreeMask';
+Mask.displayName = 'Mask';
