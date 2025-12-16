@@ -1,6 +1,4 @@
-# Mantine Json Tree Component
-
-<img width="2752" height="1536" alt="Mantine Json Tree" src="https://github.com/user-attachments/assets/26d79eca-a2e8-4d5c-a62f-6bf075573a16" />
+# Mantine Mask Component
 
 <div align="center">
   
@@ -13,12 +11,7 @@
 
 ## Overview
 
-This component is created on top of the [Mantine](https://mantine.dev/) library.
-
-[![Mantine UI Library](https://img.shields.io/badge/-MANTINE_UI_LIBRARY-blue?style=for-the-badge&labelColor=black&logo=mantine
-)](https://mantine.dev/)
-
-An interactive JSON tree viewer component built with Mantine's Tree component. Features collapsible nodes, syntax highlighting with type-specific colors, copy-to-clipboard functionality, item count badges, configurable expansion depth, and smooth animations. Perfect for debugging API responses, exploring complex data structures, and developer tools.
+This package provides a spotlight `Mask` wrapper built with [Mantine](https://mantine.dev/). It applies a radial mask to any children, supports cursor-follow or static positions, customizable radius, and background.
 
 [![Mantine Extensions](https://img.shields.io/badge/-Watch_the_Video-blue?style=for-the-badge&labelColor=black&logo=youtube
 )](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4)
@@ -50,10 +43,18 @@ import '@gfazioli/mantine-json-tree/styles.css';
 ## Usage
 
 ```tsx
-import { JsonTree } from '@gfazioli/mantine-json-tree';
+import { Mask } from '@gfazioli/mantine-json-tree';
+import { Box, Text } from '@mantine/core';
 
 function Demo() {
-  return <JsonTree data={{ key: "value" }} />;
+  return (
+    <Mask withCursorMask maskRadius={320}>
+      <Box p="lg">
+        <Text fw={700}>Spotlight content</Text>
+        <Text c="dimmed">Move your cursor to focus this area.</Text>
+      </Box>
+    </Mask>
+  );
 }
 ```
 

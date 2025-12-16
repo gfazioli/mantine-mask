@@ -1,18 +1,17 @@
 import React from 'react';
 import { render } from '@mantine-tests/core';
 import { Mask } from './Mask';
-import { JsonTree } from './JsonTree';
 
 describe('Mask', () => {
   it('renders children inside masked container', () => {
     const { container } = render(
       <Mask>
-        <JsonTree data={{ user: 'Jane' }} />
+        <div>content</div>
       </Mask>
     );
 
     expect(container.querySelector('[data-with-cursor]')).toBeTruthy();
-    expect(container.querySelector('.mantine-JsonTree-root')).toBeInTheDocument();
+    expect(container.textContent).toContain('content');
   });
 
   it('applies static mask coordinates when cursor tracking is disabled', () => {

@@ -4,10 +4,10 @@ import { Box, Text } from '@mantine/core';
 
 function Demo() {
   return (
-    <Mask p="md" withCursorMask maskRadius={360}>
+    <Mask p="md" withCursorMask maskRadius={180}>
       <Box p="lg">
-        <Text fw={700}>Cursor spotlight</Text>
-        <Text c="dimmed">Move your cursor to focus any area.</Text>
+        <Text fw={600}>Custom radius</Text>
+        <Text c="dimmed">Mask radius set to 180px.</Text>
       </Box>
     </Mask>
   );
@@ -19,17 +19,17 @@ import { Box, Text } from '@mantine/core';
 
 function Demo() {
   return (
-    <Mask p="md" withCursorMask maskRadius={360}>
+    <Mask p="md" withCursorMask maskRadius={180}>
       <Box p="lg">
-        <Text fw={700}>Cursor spotlight</Text>
-        <Text c="dimmed">Move your cursor to focus any area.</Text>
+        <Text fw={600}>Custom radius</Text>
+        <Text c="dimmed">Mask radius set to 180px.</Text>
       </Box>
     </Mask>
   );
 }
 `;
 
-export const mask: MantineDemo = {
+export const maskRadius: MantineDemo = {
   type: 'code',
   component: Demo,
   code: [{ fileName: 'Demo.tsx', code, language: 'tsx' }],

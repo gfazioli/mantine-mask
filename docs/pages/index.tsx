@@ -4,7 +4,6 @@ import { Shell } from '../components/Shell';
 import { PACKAGE_DATA } from '../data';
 import docgen from '../docgen.json';
 import Docs from '../docs.mdx';
-import { STYLES_API_DATA } from '../styles-api';
 
 export default function HomePage() {
   return (
@@ -12,9 +11,9 @@ export default function HomePage() {
       <PageHeader data={PACKAGE_DATA} />
       <DocsTabs
         docgen={docgen}
-        componentsProps={['JsonTree']}
-        componentsStyles={['JsonTree']}
-        stylesApiData={STYLES_API_DATA}
+        componentsProps={['Mask']}
+        componentsStyles={[]}
+        stylesApiData={{}}
       >
         <Docs />
       </DocsTabs>
