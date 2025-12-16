@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollArea, Stack, Title } from '@mantine/core';
 import { JsonTree } from './JsonTree';
+import { JsonTreeMask } from './JsonTreeMask';
 import classes from './Classes.module.css';
 
 export default {
@@ -224,6 +225,34 @@ export function CustomCollapseExpandIcon() {
         showIndentGuides
         expandControlIcon={<span style={{ color: 'green' }}>⊕</span>}
         collapseControlIcon={<span style={{ color: 'red' }}>⊖</span>}
+      />
+    </Stack>
+  );
+}
+
+export function Masked() {
+  return (
+    <Stack gap="md">
+      <JsonTreeMask
+        data={data}
+        title="contact.json"
+        withExpandAll
+        defaultExpanded
+        showIndentGuides
+        withCopyToClipboard
+        p="md"
+        maskRadius={360}
+      />
+
+      <JsonTreeMask
+        data={data}
+        title="Static origin"
+        withExpandAll
+        defaultExpanded
+        withCursorMask={false}
+        maskX={30}
+        maskY={30}
+        p="md"
       />
     </Stack>
   );
