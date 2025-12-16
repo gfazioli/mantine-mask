@@ -1,0 +1,36 @@
+import { InstallScript } from './components/InstallScript/InstallScript';
+import * as demos from './demos';
+
+## Installation
+
+<InstallScript packages="@gfazioli/mantine-mask" />
+
+After installation import package styles at the root of your application:
+
+```tsx
+import '@gfazioli/mantine-mask/styles.css';
+```
+
+You can import styles within a layer `@layer mantine-mask` by importing `@gfazioli/mantine-mask/styles.layer.css` file.
+
+```tsx
+import '@gfazioli/mantine-mask/styles.layer.css';
+```
+
+## Mask component
+
+`Mask` wraps any content with a radial spotlight. Enable cursor tracking with `withCursorMask` (default) or pin the mask using `maskX`, `maskY`, and set `maskRadius` and `maskBackground` for custom looks.
+
+<Demo data={demos.mask} />
+
+### Static mask origin
+
+<Demo data={demos.maskStatic} />
+
+### Custom radius
+
+<Demo data={demos.maskRadius} />
+
+### Custom background
+
+<Demo data={demos.maskBackground} />
