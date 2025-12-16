@@ -264,9 +264,10 @@ export const JsonTree = factory<JsonTreeFactory>((_props, ref) => {
 
       // Otherwise, expand nodes up to maxDepth
       const expandedNodes: string[] = [];
+      const safeMaxDepth = maxDepth ?? 0;
       const traverse = (nodes: JSONTreeNodeData[], depth: number) => {
         nodes.forEach((node) => {
-          if (depth < maxDepth && node.children) {
+          if (depth < safeMaxDepth && node.children) {
             expandedNodes.push(node.value);
             traverse(node.children as JSONTreeNodeData[], depth + 1);
           }

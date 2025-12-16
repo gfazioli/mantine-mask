@@ -87,8 +87,8 @@ export function getItemCount(value: any): number {
   }
   if (typeof value === 'object' && value !== null) {
     return Object.keys(value).length;
-    return 0;
   }
+  return 0;
 }
 
 /**

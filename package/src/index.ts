@@ -7,3 +7,5 @@ export type {
   JsonTreeProps,
   JsonTreeStylesNames,
 } from './JsonTree';
+export { JsonTreeMask } from './JsonTreeMask';
+export type { JsonTreeMaskProps } from './JsonTreeMask';
