@@ -4,7 +4,7 @@ import { MantineDemo } from '@mantinex/demo';
 
 function Demo() {
   return (
-    <Mask p="md" withCursorMask maskRadius={180}>
+    <Mask withCursorMask maskRadius={180}>
       <Image
         src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
         alt="Before"
@@ -20,7 +20,7 @@ import { Image } from '@mantine/core';
 
 function Demo() {
   return (
-    <Mask p="md" withCursorMask maskRadius={180}>
+    <Mask withCursorMask maskRadius={180}>
       <Image
         src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
         alt="Before"
