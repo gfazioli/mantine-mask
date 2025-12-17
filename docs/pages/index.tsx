@@ -4,6 +4,7 @@ import { Shell } from '../components/Shell';
 import { PACKAGE_DATA } from '../data';
 import docgen from '../docgen.json';
 import Docs from '../docs.mdx';
+import { STYLES_API_DATA } from '../styles-api';
 
 export default function HomePage() {
   return (
@@ -12,8 +13,8 @@ export default function HomePage() {
       <DocsTabs
         docgen={docgen}
         componentsProps={['Mask']}
-        componentsStyles={[]}
-        stylesApiData={{}}
+        componentsStyles={['Mask']}
+        stylesApiData={{ STYLES_API_DATA }}
       >
         <Docs />
       </DocsTabs>
