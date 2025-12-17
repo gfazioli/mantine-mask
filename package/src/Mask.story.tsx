@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Stack, Text } from '@mantine/core';
+import { Box, Text } from '@mantine/core';
 import { Mask } from './Mask';
 
 export default {
@@ -15,7 +15,8 @@ function SampleContent() {
         Spotlight content
       </Text>
       <Text c="dimmed" mt="xs">
-        Move your cursor to see the mask follow the pointer. You can also switch to static coordinates.
+        Move your cursor to see the mask follow the pointer. You can also switch to static
+        coordinates.
       </Text>
     </Box>
   );

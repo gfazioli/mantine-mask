@@ -1,9 +1,11 @@
 import '@mantine/core/styles.css';
-import '@gfazioli/mantine-json-tree/styles.css';
+// The rest of the imports below can be commented out if you don't want to use the demo, code highlight, header or logo styles
 import '@mantine/code-highlight/styles.css';
 import '@mantinex/demo/styles.css';
 import '@mantinex/mantine-header/styles.css';
 import '@mantinex/mantine-logo/styles.css';
+// Comment the line below if you don't want to use default mask styles
+import '@gfazioli/mantine-mask/styles.css';
 
 import { AppProps } from 'next/app';
 import Head from 'next/head';

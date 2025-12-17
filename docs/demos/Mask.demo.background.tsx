@@ -1,6 +1,6 @@
-import { Mask } from '@gfazioli/mantine-json-tree';
-import { MantineDemo } from '@mantinex/demo';
+import { Mask } from '@gfazioli/mantine-mask';
 import { Box, Text } from '@mantine/core';
+import { MantineDemo } from '@mantinex/demo';
 
 function Demo() {
   return (
@@ -18,7 +18,7 @@ function Demo() {
 }
 
 const code = `
-import { Mask } from '@gfazioli/mantine-json-tree';
+import { Mask } from '@gfazioli/mantine-mask';
 import { Box, Text } from '@mantine/core';
 
 function Demo() {

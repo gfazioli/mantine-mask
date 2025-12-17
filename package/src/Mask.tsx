@@ -1,9 +1,24 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
-import { Box, rem, useMantineTheme, type BoxProps } from '@mantine/core';
+import {
+  Box,
+  factory,
+  rem,
+  StylesApiProps,
+  useMantineTheme,
+  useProps,
+  type BoxProps,
+  type Factory,
+} from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
 import classes from './Mask.module.css';
 
-export interface MaskProps extends BoxProps {
+export type MaskStylesNames = 'root';
+
+export type MaskCssVariables = {
+  root: '--mask-radius';
+};
+
+export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   children?: React.ReactNode;
   /** Enable cursor-follow mask. When false, the mask uses static coordinates. @default true */
   withCursorMask?: boolean;
@@ -21,18 +36,35 @@ export interface MaskProps extends BoxProps {
   maskBackground?: string;
 }
 
-const defaultMaskRadius = 240;
+export type MaskFactory = Factory<{
+  props: MaskProps;
+  ref: HTMLDivElement;
+  stylesNames: MaskStylesNames;
+  vars: MaskCssVariables;
+}>;
 
-export const Mask = React.forwardRef<HTMLDivElement, MaskProps>((props, ref) => {
+export const defaultProps: Partial<MaskProps> = {
+  maskRadius: 240,
+};
+
+export const Mask = factory<MaskFactory>((_props, ref) => {
+  const props = useProps('Mask', defaultProps, _props);
+
   const {
     withCursorMask = true,
     maskX = 50,
     maskY = 50,
-    maskRadius = defaultMaskRadius,
+    maskRadius,
     maskBackground,
-    className,
-    style,
     children,
+
+    classNames,
+    style,
+    styles,
+    unstyled,
+    vars,
+    className,
+
     ...others
   } = props;
 
@@ -45,7 +77,9 @@ export const Mask = React.forwardRef<HTMLDivElement, MaskProps>((props, ref) => 
 
   useEffect(() => {
     const node = containerRef.current;
-    if (!node) return;
+    if (!node) {
+      return;
+    }
 
     const rect = node.getBoundingClientRect();
     const centerX = rect.width / 2;
