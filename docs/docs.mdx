@@ -19,7 +19,20 @@ import '@gfazioli/mantine-mask/styles.layer.css';
 
 ## Mask component
 
-`Mask` wraps any content with a radial spotlight. Enable cursor tracking with `withCursorMask` or pin the mask using `maskX`, `maskY`. Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
+`Mask` wraps any content and applies a radial “spotlight” effect using CSS masking.
+
+You can use it in two main ways:
+
+- **Cursor spotlight**: the mask follows the pointer (`withCursorMask`)
+- **Static spotlight**: the mask stays at a fixed position (`maskX`/`maskY`)
+
+Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
+
+### Quick mental model
+
+- The **inside** of the spotlight is visible
+- The **outside** fades to transparent (based on `maskTransparencyStart`/`maskTransparencyEnd` or `maskFeather`)
+- With `invertMask`, it is the opposite: the center becomes transparent and the outside stays visible
 
 > **NOTE**
 >
@@ -27,6 +40,16 @@ import '@gfazioli/mantine-mask/styles.layer.css';
 > - `animation="lerp"` uses `easing`
 > - `animation="none"` follows instantly
 > - `activation="pointer"` (or `activation="hover"`) toggles the mask on pointer enter/leave.
+
+### Key props (most common)
+
+- **Position**: `withCursorMask`, `maskX`, `maskY`, `cursorOffsetX`, `cursorOffsetY`
+- **Size**: `maskRadius`, `maskRadiusX`, `maskRadiusY`
+- **Feather**: `maskFeather` (simple), or `maskTransparencyStart` + `maskTransparencyEnd` (advanced)
+- **Visibility**: `maskOpacity`, `invertMask`
+- **Interaction**: `activation`, `active`, `onActiveChange`
+- **Motion**: `animation`, `easing`
+- **Bounds**: `clampToBounds`, `clampPadding`
 
 <Demo data={demos.configuration} />
 
@@ -41,9 +64,17 @@ For example, `maskFeather` is a convenience prop that overrides `maskTransparenc
 
 Another example is `maskRadius` which sets both `maskRadiusX` and `maskRadiusY` to the same value.
 
+If you need more control, you can still use the lower-level props:
+
+- `maskTransparencyStart` and `maskTransparencyEnd` define where the fade starts/ends (0–100)
+- `maskRadiusX` and `maskRadiusY` create an elliptical spotlight
+
 <Demo data={demos.convenience} />
 
 ## Basic usage
+
+Wrap any content with `Mask` to apply the spotlight effect.
+In this example the spotlight follows the cursor (`withCursorMask`) and reveals the image under the mask.
 
 <Demo data={demos.mask} />
 
@@ -51,36 +82,86 @@ Another example is `maskRadius` which sets both `maskRadiusX` and `maskRadiusY` 
 
 <Demo data={demos.maskStatic} />
 
+> 💡 Tip: keep the spotlight inside
+>
+> When using `withCursorMask`, you can keep the spotlight inside the container with:
+>
+> - `clampToBounds`: prevents the center from going outside
+> - `clampPadding`: adds extra padding from the edges
+
 ## Custom radius
+
+Use `maskRadius` when you want a simple, circular spotlight.
+It sets both X and Y radii to the same value.
 
 <Demo data={demos.maskRadius} />
 
 ## Elliptical mask
 
+If you need an oval shape, use `maskRadiusX` and `maskRadiusY`.
+This is useful for wide headers, cards, or panoramic images.
+
 <Demo data={demos.maskEllipse} />
 
 ## Inverted mask
 
+`invertMask` flips what is visible: the center becomes transparent and the outside stays visible.
+It works well for “hole” effects or to reveal a background layer.
+
 <Demo data={demos.maskInvert} />
 
-> **NOTE:**
+> **NOTE**
 >
-> As you can see in this demo, when using `invertMask`, as well as the `bg` prop, you might want to set a background color on the `Mask` component itself to avoid transparency.
+> `invertMask` makes the center transparent. Transparent areas show whatever is _behind_ the component.
+> That is why the “glow” can look light in light mode and dark in dark mode.
+>
+> Tip: set a background on the `Mask` container (for example with Mantine `bg`, or `style={{ backgroundColor: ... }}`)
+> if you want a consistent look across themes.
 
 ## Activation
 
+`activation` controls when the cursor mask is considered “active”.
+
+- `always`: the mask is always enabled
+- `hover`: enabled while the pointer is over the component (mouseenter/leave)
+- `pointer`: same idea as hover, but based on pointer events (useful for touch/stylus)
+- `focus`: enabled while the component has keyboard focus
+
+If you do not want any automatic behavior, you can control it yourself with the `active` prop.
+
 <Demo data={demos.maskActivation} />
 
+Activation can be handled automatically (with `activation`) or controlled manually:
+
+- Use `activation` for common interactions (`always`, `hover`, `pointer`, `focus`)
+- Use the `active` prop to fully control visibility (it overrides `activation`)
+- Use `onActiveChange` to react to internal activation events
+
+### Focus activation (accessibility)
+
+If you use `activation="focus"`, the component becomes keyboard-friendly.
+In that case `Mask` will apply a default `tabIndex={0}` (unless you provide a different `tabIndex`).
+
 ## Any content
+
+`Mask` does not care what you render inside.
+It can wrap images, cards, text blocks, or any custom React content.
 
 <Demo data={demos.maskCustomContent} />
 
 ## Use cases
 
+Below are a couple of common patterns you can build by combining `Mask` with background images and a hard edge (`maskFeather={0}`).
+
 ### Reveal
+
+Use a different background on the container and “reveal” it through the spotlight.
 
 <Demo data={demos.maskReveal} />
 
 ### Zoom
+
+Put a zoomed background image on the container and show it through the spotlight.
+This creates a simple “magnifier” effect.
 
 <Demo data={demos.maskZoom} />
