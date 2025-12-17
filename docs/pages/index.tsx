@@ -10,12 +10,7 @@ export default function HomePage() {
   return (
     <Shell>
       <PageHeader data={PACKAGE_DATA} />
-      <DocsTabs
-        docgen={docgen}
-        componentsProps={['Mask']}
-        componentsStyles={['Mask']}
-        stylesApiData={STYLES_API_DATA}
-      >
+      <DocsTabs docgen={docgen} componentsProps={['Mask']} componentsStyles={['Mask']} stylesApiData={STYLES_API_DATA}>
         <Docs />
       </DocsTabs>
     </Shell>
