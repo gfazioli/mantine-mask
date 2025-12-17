@@ -10,22 +10,42 @@ export default {
     maskX: 50,
     maskY: 50,
     maskRadius: 240,
+    maskRadiusX: undefined,
+    maskRadiusY: undefined,
     maskOpacity: 1,
     maskTransparencyStart: 0,
     maskTransparencyEnd: 100,
     easing: 0.12,
+    invertMask: false,
+    cursorOffsetX: 0,
+    cursorOffsetY: 0,
+    clampToBounds: true,
+    recenterOnResize: false,
+    activation: 'always',
+    active: undefined,
+    maskBackground: undefined,
   },
   argTypes: {
     withCursorMask: { control: 'boolean' },
     maskX: { control: { type: 'range', min: -100, max: 100, step: 1 } },
     maskY: { control: { type: 'range', min: -100, max: 100, step: 1 } },
     maskRadius: { control: { type: 'range', min: 0, max: 2048, step: 1 } },
+    maskRadiusX: { control: { type: 'range', min: 0, max: 2048, step: 1 } },
+    maskRadiusY: { control: { type: 'range', min: 0, max: 2048, step: 1 } },
     radius: { control: { type: 'range', min: 0, max: 2048, step: 1 } },
 
     easing: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
     maskOpacity: { control: { type: 'range', min: 0, max: 1, step: 0.01 } },
     maskTransparencyStart: { control: { type: 'range', min: 0, max: 100, step: 1 } },
     maskTransparencyEnd: { control: { type: 'range', min: 0, max: 100, step: 1 } },
+    invertMask: { control: 'boolean' },
+    cursorOffsetX: { control: { type: 'range', min: -300, max: 300, step: 1 } },
+    cursorOffsetY: { control: { type: 'range', min: -300, max: 300, step: 1 } },
+    clampToBounds: { control: 'boolean' },
+    recenterOnResize: { control: 'boolean' },
+    activation: { control: { type: 'select' }, options: ['always', 'hover', 'focus'] },
+    active: { control: 'boolean' },
+    maskBackground: { control: 'text' },
   },
 };
 
@@ -97,7 +117,31 @@ export function CustomRadius() {
 
 export function CustomBackground() {
   return (
-    <Mask p="md" withCursorMask>
+    <Mask p="md" withCursorMask maskBackground="linear-gradient(135deg, #1e3a8a, #312e81)">
+      <SampleContent />
+    </Mask>
+  );
+}
+
+export function EllipticalMask() {
+  return (
+    <Mask p="md" withCursorMask maskRadiusX={320} maskRadiusY={140}>
+      <SampleContent />
+    </Mask>
+  );
+}
+
+export function InvertedMask() {
+  return (
+    <Mask p="md" withCursorMask invertMask maskRadius={220}>
+      <SampleContent />
+    </Mask>
+  );
+}
+
+export function HoverActivation() {
+  return (
+    <Mask p="md" withCursorMask activation="hover" maskRadius={240}>
       <SampleContent />
     </Mask>
   );
