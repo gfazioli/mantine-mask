@@ -4,9 +4,9 @@ import { MantineDemo } from '@mantinex/demo';
 
 function Demo() {
   return (
-    <Mask p="md" withCursorMask={false} maskX={25} maskY={35}>
+    <Mask withCursorMask={false} maskX={25} maskY={35}>
       <Image
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1542856391-010fb87dcfed?w=800&auto=format&fit=crop"
         alt="Before"
         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
       />
@@ -20,9 +20,9 @@ import { Image } from '@mantine/core';
 
 function Demo() {
   return (
-    <Mask p="md" withCursorMask={false} maskX={25} maskY={35}>
+    <Mask withCursorMask={false} maskX={25} maskY={35}>
       <Image
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1542856391-010fb87dcfed?w=800&auto=format&fit=crop"
         alt="Before"
         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
       />
