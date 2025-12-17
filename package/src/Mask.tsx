@@ -1,25 +1,31 @@
 import React, { CSSProperties, useEffect, useRef, useState } from 'react';
 import {
   Box,
+  createVarsResolver,
   factory,
+  getRadius,
   rem,
   StylesApiProps,
-  useMantineTheme,
   useProps,
+  useStyles,
   type BoxProps,
   type Factory,
+  type MantineRadius,
 } from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
 import classes from './Mask.module.css';
 
-export type MaskStylesNames = 'root';
+export type MaskStylesNames = 'root' | 'mask';
 
 export type MaskCssVariables = {
   root: '--mask-radius';
+  mask: '--mask-transparency-end' | '--mask-transparency-start' | '--mask-opacity';
 };
 
 export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
+  /** Mask content */
   children?: React.ReactNode;
+
   /** Enable cursor-follow mask. When false, the mask uses static coordinates. @default true */
   withCursorMask?: boolean;
 
@@ -29,11 +35,18 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Vertical position of the mask center in percentages when `withCursorMask` is false. @default 50 */
   maskY?: number;
 
+  maskTransparencyEnd?: number;
+  maskTransparencyStart?: number;
+  maskOpacity?: number;
+  easing?: number;
+
   /** Radius of the mask. Accepts numbers (px) or any CSS length unit. @default 240 */
   maskRadius?: number | string;
 
-  /** Background color for the masked surface. @default theme.colors.dark[8] */
-  maskBackground?: string;
+  /** Border radius
+   * @default 'md'
+   */
+  radius?: MantineRadius | (string & {}) | number;
 }
 
 export type MaskFactory = Factory<{
@@ -44,19 +57,48 @@ export type MaskFactory = Factory<{
 }>;
 
 export const defaultProps: Partial<MaskProps> = {
+  withCursorMask: false,
+  maskX: 50,
+  maskY: 50,
   maskRadius: 240,
+  maskTransparencyEnd: 100,
+  maskTransparencyStart: 0,
+  maskOpacity: 1,
+  easing: 0.12,
+  radius: 0,
 };
+
+const varsResolver = createVarsResolver<MaskFactory>(
+  (_, { radius, maskTransparencyEnd, maskTransparencyStart, maskOpacity }) => {
+    return {
+      root: {
+        '--mask-radius': radius === undefined ? undefined : getRadius(radius),
+      },
+      mask: {
+        '--mask-transparency-end':
+          maskTransparencyEnd !== undefined ? `${maskTransparencyEnd}%` : undefined,
+        '--mask-transparency-start':
+          maskTransparencyStart !== undefined ? `${maskTransparencyStart}%` : undefined,
+        '--mask-opacity': maskOpacity.toString(),
+      },
+    };
+  }
+);
 
 export const Mask = factory<MaskFactory>((_props, ref) => {
   const props = useProps('Mask', defaultProps, _props);
 
   const {
-    withCursorMask = true,
-    maskX = 50,
-    maskY = 50,
-    maskRadius,
-    maskBackground,
     children,
+    radius,
+    withCursorMask,
+    maskX,
+    maskY,
+    maskRadius,
+    maskTransparencyEnd,
+    maskTransparencyStart,
+    maskOpacity,
+    easing,
 
     classNames,
     style,
@@ -68,7 +110,19 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     ...others
   } = props;
 
-  const theme = useMantineTheme();
+  const getStyles = useStyles<MaskFactory>({
+    name: 'Mask',
+    props,
+    classes,
+    className,
+    style,
+    classNames,
+    styles,
+    unstyled,
+    vars,
+    varsResolver,
+  });
+
   const containerRef = useRef<HTMLDivElement>(null);
   const mergedRef = useMergedRef(containerRef, ref);
 
@@ -120,7 +174,6 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       setSmoothPosition((prev) => {
         const dx = cursorPosition.x - prev.x;
         const dy = cursorPosition.y - prev.y;
-        const easing = 0.12;
 
         return {
           x: Math.round(prev.x + dx * easing),
@@ -146,19 +199,17 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       } as CSSProperties);
 
   return (
-    <Box
-      ref={mergedRef}
-      className={[classes.root, className].filter(Boolean).join(' ')}
-      style={{
-        '--mask-radius': radiusValue,
-        '--mask-background': maskBackground ?? theme.colors.dark[8],
-        ...maskVariables,
-        ...style,
-      }}
-      data-with-cursor={withCursorMask}
-      {...others}
-    >
-      <div className={classes.mask}>{children}</div>
+    <Box ref={mergedRef} {...getStyles('root')} data-with-cursor={withCursorMask} {...others}>
+      <div
+        {...getStyles('mask', {
+          style: {
+            '--mask-radial-radius': radiusValue,
+            ...maskVariables,
+          },
+        })}
+      >
+        {children}
+      </div>
     </Box>
   );
 });
