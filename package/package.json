@@ -1,6 +1,6 @@
 {
   "name": "@gfazioli/mantine-mask",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "description": "A Mantine extension spotlight mask wrapper for focusing any content with cursor-follow or static radial masks.",
   "homepage": "https://gfazioli.github.io/mantine-mask/",
   "packageManager": "yarn@4.0.1",
