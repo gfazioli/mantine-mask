@@ -18,7 +18,7 @@ import classes from './Mask.module.css';
 export type MaskStylesNames = 'root' | 'mask';
 
 export type MaskCssVariables = {
-  root: '--mask-radius' | '--mask-background';
+  root: '--mask-radius';
   mask: '--mask-transparency-end' | '--mask-transparency-start' | '--mask-opacity';
 };
 
@@ -39,9 +39,6 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
 
   /** Vertical position of the mask center in percentages when `withCursorMask` is false. @default 50 */
   maskY?: number;
-
-  /** Background of the container behind the masked content. */
-  maskBackground?: string;
 
   maskTransparencyEnd?: number;
   maskTransparencyStart?: number;
@@ -95,7 +92,6 @@ export const defaultProps: Partial<MaskProps> = {
   withCursorMask: false,
   maskX: 50,
   maskY: 50,
-  maskBackground: undefined,
   maskRadius: 240,
   maskRadiusX: undefined,
   maskRadiusY: undefined,
@@ -114,11 +110,10 @@ export const defaultProps: Partial<MaskProps> = {
 };
 
 const varsResolver = createVarsResolver<MaskFactory>(
-  (_, { radius, maskBackground, maskTransparencyEnd, maskTransparencyStart, maskOpacity }) => {
+  (_, { radius, maskTransparencyEnd, maskTransparencyStart, maskOpacity }) => {
     return {
       root: {
         '--mask-radius': radius === undefined ? undefined : getRadius(radius),
-        '--mask-background': maskBackground,
       },
       mask: {
         '--mask-transparency-end':
@@ -149,7 +144,6 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     tabIndex,
     maskX,
     maskY,
-    maskBackground,
     maskRadius,
     maskRadiusX,
     maskRadiusY,

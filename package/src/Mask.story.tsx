@@ -23,7 +23,6 @@ export default {
     recenterOnResize: false,
     activation: 'always',
     active: undefined,
-    maskBackground: undefined,
   },
   argTypes: {
     withCursorMask: { control: 'boolean' },
@@ -45,7 +44,6 @@ export default {
     recenterOnResize: { control: 'boolean' },
     activation: { control: { type: 'select' }, options: ['always', 'hover', 'focus'] },
     active: { control: 'boolean' },
-    maskBackground: { control: 'text' },
   },
 };
 
@@ -110,14 +108,6 @@ export function StaticMask() {
 export function CustomRadius() {
   return (
     <Mask p="md" withCursorMask maskRadius={200}>
-      <SampleContent />
-    </Mask>
-  );
-}
-
-export function CustomBackground() {
-  return (
-    <Mask p="md" withCursorMask maskBackground="linear-gradient(135deg, #1e3a8a, #312e81)">
       <SampleContent />
     </Mask>
   );
