@@ -34,6 +34,19 @@ Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
 - The **outside** fades to transparent (based on `maskTransparencyStart`/`maskTransparencyEnd` or `maskFeather`)
 - With `invertMask`, it is the opposite: the center becomes transparent and the outside stays visible
 
+### Variants
+
+`Mask` supports two variants:
+
+- `variant="radial"` (default): a classic circular/elliptical spotlight
+- `variant="linear"`: a linear “band” (useful for reveal stripes and scanner effects)
+
+When you use `variant="linear"`:
+
+- `maskRadius` controls the band thickness
+- `maskTransparencyStart` / `maskTransparencyEnd` (or `maskFeather`) control how soft the band edges are
+- `maskAngle` controls the band angle (in degrees)
+
 > **NOTE**
 >
 > - `animation` controls how the mask follows the cursor when `withCursorMask` is enabled.
@@ -103,12 +116,27 @@ This is useful for wide headers, cards, or panoramic images.
 
 <Demo data={demos.maskEllipse} />
 
+## Linear variant
+
+Use `variant="linear"` to create a linear band instead of a radial spotlight.
+The band follows the cursor the same way as the radial variant.
+
+Use `maskAngle` to set the direction (0–360).
+
+<Demo data={demos.maskLinear} />
+
 ## Inverted mask
 
 `invertMask` flips what is visible: the center becomes transparent and the outside stays visible.
 It works well for “hole” effects or to reveal a background layer.
 
 <Demo data={demos.maskInvert} />
+
+### Linear + inverted
+
+You can combine `variant="linear"` with `invertMask` to cut a “hole band” through the content.
+
+<Demo data={demos.maskLinearInvert} />
 
 > **NOTE**
 >

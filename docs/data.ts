@@ -26,8 +26,7 @@ export interface PackageData {
 
 export const PACKAGE_DATA: PackageData = {
   packageName: '@gfazioli/mantine-mask',
-  packageDescription:
-    'A Mantine extension spotlight mask wrapper for focusing any content with cursor-follow or static radial masks.',
+  packageDescription: 'A Mantine extension spotlight mask wrapper for focusing any content with cursor-follow or static radial masks.',
   mdxFileUrl: 'https://github.com/gfazioli/mantine-mask/blob/master/docs/docs.mdx',
   repositoryUrl: 'https://github.com/gfazioli/mantine-mask',
   licenseUrl: 'https://github.com/gfazioli/mantine-mask/blob/master/LICENSE',

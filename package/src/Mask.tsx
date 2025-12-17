@@ -165,25 +165,23 @@ function normalizeFeather(feather: number) {
   return clampValue(asPercent, 0, 100);
 }
 
-const varsResolver = createVarsResolver<MaskFactory>(
-  (_, { radius, maskTransparencyEnd, maskTransparencyStart, maskFeather, maskOpacity }) => {
-    const hasFeather = maskFeather !== undefined;
-    const featherPercent = hasFeather ? normalizeFeather(maskFeather) : undefined;
-    const computedStart = hasFeather ? 100 - (featherPercent ?? 0) : maskTransparencyStart;
-    const computedEnd = hasFeather ? 100 : maskTransparencyEnd;
+const varsResolver = createVarsResolver<MaskFactory>((_, { radius, maskTransparencyEnd, maskTransparencyStart, maskFeather, maskOpacity }) => {
+  const hasFeather = maskFeather !== undefined;
+  const featherPercent = hasFeather ? normalizeFeather(maskFeather) : undefined;
+  const computedStart = hasFeather ? 100 - (featherPercent ?? 0) : maskTransparencyStart;
+  const computedEnd = hasFeather ? 100 : maskTransparencyEnd;
 
-    return {
-      root: {
-        '--mask-radius': radius === undefined ? undefined : getRadius(radius),
-      },
-      mask: {
-        '--mask-transparency-end': computedEnd !== undefined ? `${computedEnd}%` : undefined,
-        '--mask-transparency-start': computedStart !== undefined ? `${computedStart}%` : undefined,
-        '--mask-opacity': maskOpacity.toString(),
-      },
-    };
-  }
-);
+  return {
+    root: {
+      '--mask-radius': radius === undefined ? undefined : getRadius(radius),
+    },
+    mask: {
+      '--mask-transparency-end': computedEnd !== undefined ? `${computedEnd}%` : undefined,
+      '--mask-transparency-start': computedStart !== undefined ? `${computedStart}%` : undefined,
+      '--mask-opacity': maskOpacity.toString(),
+    },
+  };
+});
 
 function clampValue(value: number, min: number, max: number) {
   if (max < min) {
@@ -207,13 +205,7 @@ function parseAngleDegrees(angle: number | string | undefined, fallback: number)
   return fallback;
 }
 
-function getLinearCenterPercent(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  angleDeg: number
-) {
+function getLinearCenterPercent(x: number, y: number, width: number, height: number, angleDeg: number) {
   if (width <= 0 || height <= 0) {
     return 50;
   }
@@ -224,12 +216,7 @@ function getLinearCenterPercent(
 
   const project = (px: number, py: number) => px * directionX + py * directionY;
 
-  const projections = [
-    project(0, 0),
-    project(width, 0),
-    project(0, height),
-    project(width, height),
-  ];
+  const projections = [project(0, 0), project(width, 0), project(0, height), project(width, height)];
 
   const min = Math.min(...projections);
   const max = Math.max(...projections);
@@ -444,18 +431,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       return;
     }
 
-    const radiusXNumber =
-      typeof maskRadiusX === 'number'
-        ? maskRadiusX
-        : typeof maskRadius === 'number'
-          ? maskRadius
-          : undefined;
-    const radiusYNumber =
-      typeof maskRadiusY === 'number'
-        ? maskRadiusY
-        : typeof maskRadius === 'number'
-          ? maskRadius
-          : undefined;
+    const radiusXNumber = typeof maskRadiusX === 'number' ? maskRadiusX : typeof maskRadius === 'number' ? maskRadius : undefined;
+    const radiusYNumber = typeof maskRadiusY === 'number' ? maskRadiusY : typeof maskRadius === 'number' ? maskRadius : undefined;
 
     const radiusXForClamp = radiusXNumber ?? 0;
     const radiusYForClamp = radiusYNumber ?? 0;
@@ -527,13 +504,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
         x: (containerWidth * (maskX ?? 50)) / 100,
         y: (containerHeight * (maskY ?? 50)) / 100,
       };
-  const linearCenter = getLinearCenterPercent(
-    linearPoint.x,
-    linearPoint.y,
-    containerWidth,
-    containerHeight,
-    angleDegrees
-  );
+  const linearCenter = getLinearCenterPercent(linearPoint.x, linearPoint.y, containerWidth, containerHeight, angleDegrees);
 
   const maskVariables: CSSProperties = withCursorMask
     ? ({

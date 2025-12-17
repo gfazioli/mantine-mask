@@ -39,10 +39,29 @@ export const configuration: MantineDemo = {
   code: [{ fileName: 'Demo.tsx', code, language: 'tsx' }],
   controls: [
     {
+      type: 'segmented',
+      prop: 'variant',
+      initialValue: 'radial',
+      libraryValue: 'radial',
+      data: [
+        { value: 'radial', label: 'Radial' },
+        { value: 'linear', label: 'Linear' },
+      ],
+    },
+    {
       type: 'boolean',
       prop: 'withCursorMask',
       initialValue: false,
       libraryValue: false,
+    },
+    {
+      type: 'number',
+      prop: 'maskAngle',
+      initialValue: 90,
+      libraryValue: 90,
+      min: 0,
+      max: 360,
+      step: 1,
     },
     {
       type: 'segmented',
