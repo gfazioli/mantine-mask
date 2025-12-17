@@ -5,6 +5,8 @@ import { Mask, type MaskProps } from './Mask';
 export default {
   title: 'Mask',
   args: {
+    variant: 'radial',
+    maskAngle: 90,
     radius: 0,
     withCursorMask: false,
     maskX: 50,
@@ -29,6 +31,8 @@ export default {
     active: undefined,
   },
   argTypes: {
+    variant: { control: { type: 'select' }, options: ['radial', 'linear'] },
+    maskAngle: { control: { type: 'range', min: 0, max: 360, step: 1 } },
     withCursorMask: { control: 'boolean' },
     maskX: { control: { type: 'range', min: -100, max: 100, step: 1 } },
     maskY: { control: { type: 'range', min: -100, max: 100, step: 1 } },

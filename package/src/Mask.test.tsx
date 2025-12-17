@@ -55,6 +55,20 @@ describe('Mask', () => {
     expect(mask.getAttribute('data-invert')).toBe('true');
   });
 
+  it('supports linear variant with angle and computed center', () => {
+    const { container } = render(
+      <Mask variant="linear" withCursorMask={false} maskX={25} maskY={50} maskAngle={30}>
+        <div>content</div>
+      </Mask>
+    );
+
+    const mask = container.querySelector('[data-active]') as HTMLElement;
+
+    expect(mask.getAttribute('data-variant')).toBe('linear');
+    expect(mask.style.getPropertyValue('--mask-angle')).toBe('30deg');
+    expect(mask.style.getPropertyValue('--mask-linear-center')).toBeTruthy();
+  });
+
   it('supports maskFeather as a convenience prop', async () => {
     const { container } = await render(
       <Mask maskFeather={20} maskOpacity={0.6}>

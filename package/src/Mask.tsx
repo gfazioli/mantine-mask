@@ -15,6 +15,9 @@ import {
 import { useMergedRef } from '@mantine/hooks';
 import classes from './Mask.module.css';
 
+/** Available mask variants */
+export type MaskVariant = 'radial' | 'linear';
+
 export type MaskStylesNames = 'root' | 'mask';
 
 export type MaskCssVariables = {
@@ -27,6 +30,12 @@ export type MaskActivation = 'always' | 'hover' | 'focus' | 'pointer';
 export type MaskAnimation = 'lerp' | 'none';
 
 export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
+  /** Mask component variant @default 'radial' */
+  variant?: MaskVariant;
+
+  /** Linear gradient angle (deg) when `variant="linear"`. @default 90 */
+  maskAngle?: number | string;
+
   /** Mask content */
   children?: React.ReactNode;
 
@@ -119,10 +128,13 @@ export type MaskFactory = Factory<{
   props: MaskProps;
   ref: HTMLDivElement;
   stylesNames: MaskStylesNames;
+  variant: MaskVariant;
   vars: MaskCssVariables;
 }>;
 
 export const defaultProps: Partial<MaskProps> = {
+  variant: 'radial',
+  maskAngle: 90,
   withCursorMask: false,
   maskX: 50,
   maskY: 50,
@@ -181,10 +193,62 @@ function clampValue(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
+function parseAngleDegrees(angle: number | string | undefined, fallback: number) {
+  if (typeof angle === 'number') {
+    return angle;
+  }
+
+  if (typeof angle === 'string') {
+    const trimmed = angle.trim();
+    const numeric = Number.parseFloat(trimmed);
+    return Number.isFinite(numeric) ? numeric : fallback;
+  }
+
+  return fallback;
+}
+
+function getLinearCenterPercent(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  angleDeg: number
+) {
+  if (width <= 0 || height <= 0) {
+    return 50;
+  }
+
+  const theta = (angleDeg * Math.PI) / 180;
+  const directionX = Math.sin(theta);
+  const directionY = -Math.cos(theta);
+
+  const project = (px: number, py: number) => px * directionX + py * directionY;
+
+  const projections = [
+    project(0, 0),
+    project(width, 0),
+    project(0, height),
+    project(width, height),
+  ];
+
+  const min = Math.min(...projections);
+  const max = Math.max(...projections);
+  const range = max - min;
+
+  if (range <= 0) {
+    return 50;
+  }
+
+  const t = project(x, y);
+  return clampValue(((t - min) / range) * 100, 0, 100);
+}
+
 export const Mask = factory<MaskFactory>((_props, ref) => {
   const props = useProps('Mask', defaultProps, _props);
 
   const {
+    variant,
+    maskAngle,
     children,
     radius,
     withCursorMask,
@@ -237,6 +301,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const mergedRef = useMergedRef(containerRef, ref);
 
+  const containerSizeRef = useRef({ width: 0, height: 0 });
+
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
 
@@ -266,6 +332,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     }
 
     const rect = node.getBoundingClientRect();
+    containerSizeRef.current = { width: rect.width, height: rect.height };
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     setCursorPosition({ x: centerX, y: centerY });
@@ -284,6 +351,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
     const observer = new ResizeObserver(() => {
       const rect = node.getBoundingClientRect();
+      containerSizeRef.current = { width: rect.width, height: rect.height };
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
       setCursorPosition({ x: centerX, y: centerY });
@@ -307,6 +375,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     let frame = 0;
     const recenter = () => {
       const rect = node.getBoundingClientRect();
+      containerSizeRef.current = { width: rect.width, height: rect.height };
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
       setCursorPosition({ x: centerX, y: centerY });
@@ -360,6 +429,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     }
 
     const rect = node.getBoundingClientRect();
+    containerSizeRef.current = { width: rect.width, height: rect.height };
 
     const rawX = event.clientX - rect.left + (cursorOffsetX ?? 0);
     const rawY = event.clientY - rect.top + (cursorOffsetY ?? 0);
@@ -440,6 +510,31 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
   const resolvedRadiusX = radiusXValue ?? radiusValue;
   const resolvedRadiusY = radiusYValue ?? radiusValue;
 
+  const angleDegrees = parseAngleDegrees(maskAngle, 90);
+  const angleValue =
+    typeof maskAngle === 'number'
+      ? `${maskAngle}deg`
+      : typeof maskAngle === 'string'
+        ? /[a-z%]/i.test(maskAngle.trim())
+          ? maskAngle.trim()
+          : `${maskAngle.trim()}deg`
+        : '90deg';
+  const { width: containerWidth, height: containerHeight } = containerSizeRef.current;
+
+  const linearPoint = withCursorMask
+    ? { x: smoothPosition.x, y: smoothPosition.y }
+    : {
+        x: (containerWidth * (maskX ?? 50)) / 100,
+        y: (containerHeight * (maskY ?? 50)) / 100,
+      };
+  const linearCenter = getLinearCenterPercent(
+    linearPoint.x,
+    linearPoint.y,
+    containerWidth,
+    containerHeight,
+    angleDegrees
+  );
+
   const maskVariables: CSSProperties = withCursorMask
     ? ({
         '--mask-x': `${smoothPosition.x}px`,
@@ -469,9 +564,13 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
             '--mask-radial-radius': radiusValue,
             '--mask-radial-radius-x': resolvedRadiusX,
             '--mask-radial-radius-y': resolvedRadiusY,
+            '--mask-linear-radius': radiusValue,
+            '--mask-angle': angleValue,
+            '--mask-linear-center': `${linearCenter}%`,
             ...maskVariables,
           },
         })}
+        data-variant={variant}
         data-invert={invertMask}
         data-active={isActive}
       >
