@@ -2,6 +2,7 @@
   position: relative;
   overflow: hidden;
   border-radius: var(--mask-radius);
+  background: var(--mask-background);
 }
 
 .mask {
@@ -11,13 +12,39 @@
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
   -webkit-mask-image: radial-gradient(
-    var(--mask-radial-radius, 18rem) at var(--mask-x, 50%) var(--mask-y, 50%),
+    ellipse var(--mask-radial-radius-x, var(--mask-radial-radius, 18rem))
+      var(--mask-radial-radius-y, var(--mask-radial-radius, 18rem)) at var(--mask-x, 50%)
+      var(--mask-y, 50%),
     var(--mask-color, white) var(--mask-transparency-start, 0%),
     transparent var(--mask-transparency-end, 100%)
   );
   mask-image: radial-gradient(
-    var(--mask-radial-radius, 18rem) at var(--mask-x, 50%) var(--mask-y, 50%),
+    ellipse var(--mask-radial-radius-x, var(--mask-radial-radius, 18rem))
+      var(--mask-radial-radius-y, var(--mask-radial-radius, 18rem)) at var(--mask-x, 50%)
+      var(--mask-y, 50%),
     var(--mask-color, white) var(--mask-transparency-start, 0%),
     transparent var(--mask-transparency-end, 100%)
   );
+}
+
+.mask[data-invert='true'] {
+  -webkit-mask-image: radial-gradient(
+    ellipse var(--mask-radial-radius-x, var(--mask-radial-radius, 18rem))
+      var(--mask-radial-radius-y, var(--mask-radial-radius, 18rem)) at var(--mask-x, 50%)
+      var(--mask-y, 50%),
+    transparent var(--mask-transparency-start, 0%),
+    var(--mask-color, white) var(--mask-transparency-end, 100%)
+  );
+  mask-image: radial-gradient(
+    ellipse var(--mask-radial-radius-x, var(--mask-radial-radius, 18rem))
+      var(--mask-radial-radius-y, var(--mask-radial-radius, 18rem)) at var(--mask-x, 50%)
+      var(--mask-y, 50%),
+    transparent var(--mask-transparency-start, 0%),
+    var(--mask-color, white) var(--mask-transparency-end, 100%)
+  );
+}
+
+.mask[data-active='false'] {
+  -webkit-mask-image: none;
+  mask-image: none;
 }

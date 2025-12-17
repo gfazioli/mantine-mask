@@ -16,16 +16,48 @@ describe('Mask', () => {
 
   it('applies static mask coordinates when cursor tracking is disabled', () => {
     const { container } = render(
-      <Mask withCursorMask={false} maskX={10} maskY={25} maskRadius={320}>
+      <Mask
+        withCursorMask={false}
+        maskX={10}
+        maskY={25}
+        maskRadius={320}
+        maskBackground="linear-gradient(135deg, red, blue)"
+      >
         <div>content</div>
       </Mask>
     );
 
-    const wrapper = container.querySelector('[data-with-cursor]') as HTMLElement;
+    const root = container.querySelector('[data-with-cursor]') as HTMLElement;
+    const mask = container.querySelector('[data-active]') as HTMLElement;
 
-    expect(wrapper.getAttribute('data-with-cursor')).toBe('false');
-    expect(wrapper.style.getPropertyValue('--mask-x')).toBe('10%');
-    expect(wrapper.style.getPropertyValue('--mask-y')).toBe('25%');
-    expect(wrapper.style.getPropertyValue('--mask-radius')).toContain('20rem');
+    expect(root.getAttribute('data-with-cursor')).toBe('false');
+    expect(root.style.getPropertyValue('--mask-background')).toContain('linear-gradient');
+
+    expect(mask.style.getPropertyValue('--mask-x')).toBe('10%');
+    expect(mask.style.getPropertyValue('--mask-y')).toBe('25%');
+    expect(mask.style.getPropertyValue('--mask-radial-radius')).toContain('20rem');
+  });
+
+  it('supports elliptical radii with maskRadiusX and maskRadiusY', () => {
+    const { container } = render(
+      <Mask withCursorMask={false} maskRadiusX={100} maskRadiusY={200}>
+        <div>content</div>
+      </Mask>
+    );
+
+    const mask = container.querySelector('[data-active]') as HTMLElement;
+    expect(mask.style.getPropertyValue('--mask-radial-radius-x')).toContain('6.25rem');
+    expect(mask.style.getPropertyValue('--mask-radial-radius-y')).toContain('12.5rem');
+  });
+
+  it('sets invert flag when invertMask is enabled', () => {
+    const { container } = render(
+      <Mask withCursorMask={false} invertMask>
+        <div>content</div>
+      </Mask>
+    );
+
+    const mask = container.querySelector('[data-active]') as HTMLElement;
+    expect(mask.getAttribute('data-invert')).toBe('true');
   });
 });
