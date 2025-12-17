@@ -26,6 +26,36 @@
   );
 }
 
+.mask[data-variant='linear'] {
+  --mask-linear-solid: calc(
+    var(--mask-linear-radius, var(--mask-radial-radius, 18rem)) *
+      (var(--mask-transparency-start, 0%) / 100%)
+  );
+  --mask-linear-fade: calc(
+    var(--mask-linear-radius, var(--mask-radial-radius, 18rem)) *
+      (var(--mask-transparency-end, 100%) / 100%)
+  );
+
+  -webkit-mask-image: linear-gradient(
+    var(--mask-angle, 90deg),
+    transparent 0,
+    transparent calc(var(--mask-linear-center, 50%) - var(--mask-linear-fade, 18rem)),
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) - var(--mask-linear-solid, 0rem)),
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) + var(--mask-linear-solid, 0rem)),
+    transparent calc(var(--mask-linear-center, 50%) + var(--mask-linear-fade, 18rem)),
+    transparent 100%
+  );
+  mask-image: linear-gradient(
+    var(--mask-angle, 90deg),
+    transparent 0,
+    transparent calc(var(--mask-linear-center, 50%) - var(--mask-linear-fade, 18rem)),
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) - var(--mask-linear-solid, 0rem)),
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) + var(--mask-linear-solid, 0rem)),
+    transparent calc(var(--mask-linear-center, 50%) + var(--mask-linear-fade, 18rem)),
+    transparent 100%
+  );
+}
+
 .mask[data-invert='true'] {
   -webkit-mask-image: radial-gradient(
     ellipse var(--mask-radial-radius-x, var(--mask-radial-radius, 18rem))
@@ -40,6 +70,27 @@
       var(--mask-y, 50%),
     transparent var(--mask-transparency-start, 0%),
     var(--mask-color, white) var(--mask-transparency-end, 100%)
+  );
+}
+
+.mask[data-variant='linear'][data-invert='true'] {
+  -webkit-mask-image: linear-gradient(
+    var(--mask-angle, 90deg),
+    var(--mask-color, white) 0,
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) - var(--mask-linear-fade, 18rem)),
+    transparent calc(var(--mask-linear-center, 50%) - var(--mask-linear-solid, 0rem)),
+    transparent calc(var(--mask-linear-center, 50%) + var(--mask-linear-solid, 0rem)),
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) + var(--mask-linear-fade, 18rem)),
+    var(--mask-color, white) 100%
+  );
+  mask-image: linear-gradient(
+    var(--mask-angle, 90deg),
+    var(--mask-color, white) 0,
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) - var(--mask-linear-fade, 18rem)),
+    transparent calc(var(--mask-linear-center, 50%) - var(--mask-linear-solid, 0rem)),
+    transparent calc(var(--mask-linear-center, 50%) + var(--mask-linear-solid, 0rem)),
+    var(--mask-color, white) calc(var(--mask-linear-center, 50%) + var(--mask-linear-fade, 18rem)),
+    var(--mask-color, white) 100%
   );
 }
 
