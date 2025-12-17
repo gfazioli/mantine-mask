@@ -97,7 +97,7 @@ export function CursorMask() {
   return (
     <Mask withCursorMask>
       <Image
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        src="https://images.unsplash.com/photo-1476673160081-cf065607f449?w=800&auto=format&fit=crop"
         alt="Before"
         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
       />
@@ -107,7 +107,7 @@ export function CursorMask() {
 
 export function StaticMask() {
   return (
-    <Mask p="md" withCursorMask={false} maskX={30} maskY={30}>
+    <Mask withCursorMask={false} maskX={30} maskY={30}>
       <SampleContent />
     </Mask>
   );
@@ -115,7 +115,7 @@ export function StaticMask() {
 
 export function CustomRadius() {
   return (
-    <Mask p="md" withCursorMask maskRadius={200}>
+    <Mask withCursorMask maskRadius={200}>
       <SampleContent />
     </Mask>
   );
@@ -123,7 +123,7 @@ export function CustomRadius() {
 
 export function EllipticalMask() {
   return (
-    <Mask p="md" withCursorMask maskRadiusX={320} maskRadiusY={140}>
+    <Mask withCursorMask maskRadiusX={320} maskRadiusY={140}>
       <SampleContent />
     </Mask>
   );
@@ -131,15 +131,53 @@ export function EllipticalMask() {
 
 export function InvertedMask() {
   return (
-    <Mask p="md" withCursorMask invertMask maskRadius={220}>
-      <SampleContent />
+    <Mask withCursorMask invertMask maskRadius={220}>
+      <Image
+        src="https://images.unsplash.com/photo-1476673160081-cf065607f449?w=800&auto=format&fit=crop"
+        alt="Before"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}
+
+export function Reveal() {
+  return (
+    <Mask
+      withCursorMask
+      maskRadius={120}
+      maskFeather={0}
+      bg="url('https://images.unsplash.com/photo-1542749191-320c458c8435?w=800&auto=format&fit=crop') center/cover no-repeat"
+    >
+      <Image
+        src="https://images.unsplash.com/photo-1476673160081-cf065607f449?w=800&auto=format&fit=crop"
+        alt="Before"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}
+
+export function Zoom() {
+  return (
+    <Mask
+      withCursorMask
+      maskRadius={120}
+      maskFeather={0}
+      bg="url('https://images.unsplash.com/photo-1542749191-320c458c8435?w=800&auto=format&fit=cover') center no-repeat"
+    >
+      <Image
+        src="https://images.unsplash.com/photo-1542749191-320c458c8435?w=800&auto=format&fit=crop"
+        alt="Before"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
     </Mask>
   );
 }
 
 export function HoverActivation() {
   return (
-    <Mask p="md" withCursorMask activation="hover" maskRadius={240}>
+    <Mask withCursorMask activation="hover" maskRadius={240}>
       <SampleContent />
     </Mask>
   );

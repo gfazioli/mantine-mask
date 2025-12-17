@@ -6,4 +6,6 @@ export { maskCustomContent } from './Mask.demo.custom-content';
 export { maskEllipse } from './Mask.demo.ellipse';
 export { maskInvert } from './Mask.demo.invert';
 export { maskRadius } from './Mask.demo.radius';
+export { maskReveal } from './Mask.demo.reveal';
 export { maskStatic } from './Mask.demo.static';
+export { maskZoom } from './Mask.demo.zoom';
