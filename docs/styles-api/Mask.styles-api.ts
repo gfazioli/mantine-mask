@@ -10,7 +10,6 @@ export const MaskStylesApi: StylesApiData<MaskFactory> = {
   vars: {
     root: {
       '--mask-radius': 'Controls mask border radius',
-      '--mask-background': 'Controls root background',
     },
     mask: {
       '--mask-transparency-start': 'Gradient start stop (percentage)',

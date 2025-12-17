@@ -16,13 +16,7 @@ describe('Mask', () => {
 
   it('applies static mask coordinates when cursor tracking is disabled', () => {
     const { container } = render(
-      <Mask
-        withCursorMask={false}
-        maskX={10}
-        maskY={25}
-        maskRadius={320}
-        maskBackground="linear-gradient(135deg, red, blue)"
-      >
+      <Mask withCursorMask={false} maskX={10} maskY={25} maskRadius={320}>
         <div>content</div>
       </Mask>
     );
@@ -31,7 +25,6 @@ describe('Mask', () => {
     const mask = container.querySelector('[data-active]') as HTMLElement;
 
     expect(root.getAttribute('data-with-cursor')).toBe('false');
-    expect(root.style.getPropertyValue('--mask-background')).toContain('linear-gradient');
 
     expect(mask.style.getPropertyValue('--mask-x')).toBe('10%');
     expect(mask.style.getPropertyValue('--mask-y')).toBe('25%');
