@@ -22,7 +22,9 @@ export type MaskCssVariables = {
   mask: '--mask-transparency-end' | '--mask-transparency-start' | '--mask-opacity';
 };
 
-export type MaskActivation = 'always' | 'hover' | 'focus';
+export type MaskActivation = 'always' | 'hover' | 'focus' | 'pointer';
+
+export type MaskAnimation = 'lerp' | 'none';
 
 export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Mask content */
@@ -40,9 +42,24 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Vertical position of the mask center in percentages when `withCursorMask` is false. @default 50 */
   maskY?: number;
 
-  maskTransparencyEnd?: number;
+  /** Controls gradient start stop (percentage). @default 0 */
   maskTransparencyStart?: number;
+
+  /** Controls gradient end stop (percentage). @default 100 */
+  maskTransparencyEnd?: number;
+
+  /**
+   * Controls gradient feathering as a single value.
+   * If set, it overrides `maskTransparencyStart` and `maskTransparencyEnd`.
+   * - 0: hard edge (start=end=100)
+   * - 100: full fade (start=0, end=100)
+   */
+  maskFeather?: number;
+
+  /** Opacity of the masked content (0 to 1). @default 1 */
   maskOpacity?: number;
+
+  /** Easing factor for cursor-follow mask animation (0 to 1). Lower values result in slower easing. @default 0.12 */
   easing?: number;
 
   /** Radius of the mask. Accepts numbers (px) or any CSS length unit. @default 240 */
@@ -66,14 +83,31 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Constrain cursor-follow mask to stay inside container bounds when possible. @default true */
   clampToBounds?: boolean;
 
+  /** Extra padding (px) applied when `clampToBounds` is enabled. @default 0 */
+  clampPadding?: number;
+
   /** Recenter the mask when container size changes. @default false */
   recenterOnResize?: boolean;
+
+  /** Recenter the mask when children change. @default false */
+  recenterOnChildrenChange?: boolean;
 
   /** Controls when the cursor mask is active. @default 'always' */
   activation?: MaskActivation;
 
   /** Controlled active state. When provided, it overrides `activation`. */
   active?: boolean;
+
+  /** Called when active state changes due to activation events. */
+  onActiveChange?: (active: boolean) => void;
+
+  /**
+   * Cursor mask animation.
+   * - `lerp`: animate following cursor using `easing`
+   * - `none`: follow cursor instantly
+   * @default 'lerp'
+   */
+  animation?: MaskAnimation;
 
   /** Border radius
    * @default 'md'
@@ -97,29 +131,42 @@ export const defaultProps: Partial<MaskProps> = {
   maskRadiusY: undefined,
   maskTransparencyEnd: 100,
   maskTransparencyStart: 0,
+  maskFeather: undefined,
   maskOpacity: 1,
   easing: 0.12,
   invertMask: false,
   cursorOffsetX: 0,
   cursorOffsetY: 0,
-  clampToBounds: true,
+  clampToBounds: false,
+  clampPadding: 0,
   recenterOnResize: false,
+  recenterOnChildrenChange: false,
   activation: 'always',
   active: undefined,
+  onActiveChange: undefined,
+  animation: 'lerp',
   radius: 0,
 };
 
+function normalizeFeather(feather: number) {
+  const asPercent = feather <= 1 ? feather * 100 : feather;
+  return clampValue(asPercent, 0, 100);
+}
+
 const varsResolver = createVarsResolver<MaskFactory>(
-  (_, { radius, maskTransparencyEnd, maskTransparencyStart, maskOpacity }) => {
+  (_, { radius, maskTransparencyEnd, maskTransparencyStart, maskFeather, maskOpacity }) => {
+    const hasFeather = maskFeather !== undefined;
+    const featherPercent = hasFeather ? normalizeFeather(maskFeather) : undefined;
+    const computedStart = hasFeather ? 100 - (featherPercent ?? 0) : maskTransparencyStart;
+    const computedEnd = hasFeather ? 100 : maskTransparencyEnd;
+
     return {
       root: {
         '--mask-radius': radius === undefined ? undefined : getRadius(radius),
       },
       mask: {
-        '--mask-transparency-end':
-          maskTransparencyEnd !== undefined ? `${maskTransparencyEnd}%` : undefined,
-        '--mask-transparency-start':
-          maskTransparencyStart !== undefined ? `${maskTransparencyStart}%` : undefined,
+        '--mask-transparency-end': computedEnd !== undefined ? `${computedEnd}%` : undefined,
+        '--mask-transparency-start': computedStart !== undefined ? `${computedStart}%` : undefined,
         '--mask-opacity': maskOpacity.toString(),
       },
     };
@@ -149,15 +196,20 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     maskRadiusY,
     maskTransparencyEnd,
     maskTransparencyStart,
+    maskFeather,
     maskOpacity,
     easing,
     invertMask,
     cursorOffsetX,
     cursorOffsetY,
     clampToBounds,
+    clampPadding,
     recenterOnResize,
+    recenterOnChildrenChange,
     activation,
     active,
+    onActiveChange,
+    animation,
 
     classNames,
     style,
@@ -199,6 +251,14 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     }
   }, [activation]);
 
+  const setActive = (nextActive: boolean) => {
+    if (active === undefined) {
+      setUncontrolledActive(nextActive);
+    }
+
+    onActiveChange?.(nextActive);
+  };
+
   useEffect(() => {
     const node = containerRef.current;
     if (!node) {
@@ -235,7 +295,39 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
   }, [recenterOnResize]);
 
   useEffect(() => {
-    if (!withCursorMask || !isActive) {
+    if (!recenterOnChildrenChange) {
+      return undefined;
+    }
+
+    const node = containerRef.current;
+    if (!node) {
+      return undefined;
+    }
+
+    let frame = 0;
+    const recenter = () => {
+      const rect = node.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      setCursorPosition({ x: centerX, y: centerY });
+      setSmoothPosition({ x: centerX, y: centerY });
+    };
+
+    const observer = new MutationObserver(() => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(recenter);
+    });
+
+    observer.observe(node, { childList: true, subtree: true });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+    };
+  }, [recenterOnChildrenChange]);
+
+  useEffect(() => {
+    if (!withCursorMask || !isActive || animation !== 'lerp') {
       return undefined;
     }
 
@@ -255,7 +347,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
-  }, [cursorPosition.x, cursorPosition.y, easing, isActive, withCursorMask]);
+  }, [animation, cursorPosition.x, cursorPosition.y, easing, isActive, withCursorMask]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (!withCursorMask || !isActive) {
@@ -273,7 +365,12 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     const rawY = event.clientY - rect.top + (cursorOffsetY ?? 0);
 
     if (!clampToBounds) {
-      setCursorPosition({ x: rawX, y: rawY });
+      if (animation === 'none') {
+        setCursorPosition({ x: rawX, y: rawY });
+        setSmoothPosition({ x: rawX, y: rawY });
+      } else {
+        setCursorPosition({ x: rawX, y: rawY });
+      }
       return;
     }
 
@@ -293,54 +390,46 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     const radiusXForClamp = radiusXNumber ?? 0;
     const radiusYForClamp = radiusYNumber ?? 0;
 
-    const minX = radiusXForClamp;
-    const maxX = rect.width - radiusXForClamp;
-    const minY = radiusYForClamp;
-    const maxY = rect.height - radiusYForClamp;
+    const padding = clampPadding ?? 0;
+    const minX = radiusXForClamp + padding;
+    const maxX = rect.width - radiusXForClamp - padding;
+    const minY = radiusYForClamp + padding;
+    const maxY = rect.height - radiusYForClamp - padding;
 
-    setCursorPosition({
+    const next = {
       x: clampValue(rawX, minX, maxX),
       y: clampValue(rawY, minY, maxY),
-    });
+    };
+
+    if (animation === 'none') {
+      setCursorPosition(next);
+      setSmoothPosition(next);
+    } else {
+      setCursorPosition(next);
+    }
   };
 
   const handlePointerEnter = () => {
-    if (active !== undefined) {
-      return;
-    }
-
-    if (activation === 'hover') {
-      setUncontrolledActive(true);
+    if (activation === 'hover' || activation === 'pointer') {
+      setActive(true);
     }
   };
 
   const handlePointerLeave = () => {
-    if (active !== undefined) {
-      return;
-    }
-
-    if (activation === 'hover') {
-      setUncontrolledActive(false);
+    if (activation === 'hover' || activation === 'pointer') {
+      setActive(false);
     }
   };
 
   const handleFocus = () => {
-    if (active !== undefined) {
-      return;
-    }
-
     if (activation === 'focus') {
-      setUncontrolledActive(true);
+      setActive(true);
     }
   };
 
   const handleBlur = () => {
-    if (active !== undefined) {
-      return;
-    }
-
     if (activation === 'focus') {
-      setUncontrolledActive(false);
+      setActive(false);
     }
   };
 
@@ -392,4 +481,5 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
   );
 });
 
+Mask.classes = classes;
 Mask.displayName = 'Mask';

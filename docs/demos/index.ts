@@ -1,6 +1,7 @@
 export { maskActivation } from './Mask.demo.activation';
 export { mask } from './Mask.demo.basic';
 export { configuration } from './Mask.demo.configuration';
+export { convenience } from './Mask.demo.convenience';
 export { maskCustomContent } from './Mask.demo.custom-content';
 export { maskEllipse } from './Mask.demo.ellipse';
 export { maskInvert } from './Mask.demo.invert';

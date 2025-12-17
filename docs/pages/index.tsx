@@ -14,7 +14,7 @@ export default function HomePage() {
         docgen={docgen}
         componentsProps={['Mask']}
         componentsStyles={['Mask']}
-        stylesApiData={{ STYLES_API_DATA }}
+        stylesApiData={STYLES_API_DATA}
       >
         <Docs />
       </DocsTabs>

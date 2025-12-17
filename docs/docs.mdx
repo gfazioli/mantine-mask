@@ -21,7 +21,29 @@ import '@gfazioli/mantine-mask/styles.layer.css';
 
 `Mask` wraps any content with a radial spotlight. Enable cursor tracking with `withCursorMask` or pin the mask using `maskX`, `maskY`. Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
 
+> **NOTE**
+>
+> - `animation` controls how the mask follows the cursor when `withCursorMask` is enabled.
+> - `animation="lerp"` uses `easing`
+> - `animation="none"` follows instantly
+> - `activation="pointer"` (or `activation="hover"`) toggles the mask on pointer enter/leave.
+
 <Demo data={demos.configuration} />
+
+## Convenience props
+
+You can use convenience props to set common configurations quickly.
+
+For example, `maskFeather` is a convenience prop that overrides `maskTransparencyStart`/`maskTransparencyEnd`.
+
+- `maskFeather={0}`: hard edge (start=end=100)
+- `maskFeather={100}`: full fade (start=0, end=100)
+
+Another example is `maskRadius` which sets both `maskRadiusX` and `maskRadiusY` to the same value.
+
+<Demo data={demos.convenience} />
+
+### Basic usage
 
 <Demo data={demos.mask} />
 

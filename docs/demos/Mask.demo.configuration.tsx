@@ -5,10 +5,10 @@ import { MantineDemo } from '@mantinex/demo';
 function Demo(props: MaskProps) {
   return (
     <Flex>
-      <Mask p="md" {...props}>
+      <Mask {...props}>
         <Image
-          src="https://images.unsplash.com/photo-1542640244-7e672d6cef4e?w=800&auto=format&fit=crop"
-          alt="Masked content"
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+          alt="Before"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
       </Mask>
@@ -22,7 +22,7 @@ import { Image } from '@mantine/core';
 
 function Demo(props: MaskProps) {
   return (
-    <Mask p="md" {...props}>
+    <Mask{{props}}>
       <Image
         src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
         alt="Before"
@@ -46,6 +46,16 @@ export const configuration: MantineDemo = {
     },
     {
       type: 'segmented',
+      prop: 'animation',
+      initialValue: 'lerp',
+      libraryValue: 'lerp',
+      data: [
+        { value: 'lerp', label: 'Lerp' },
+        { value: 'none', label: 'None' },
+      ],
+    },
+    {
+      type: 'select',
       prop: 'activation',
       initialValue: 'always',
       libraryValue: 'always',
@@ -53,22 +63,14 @@ export const configuration: MantineDemo = {
         { value: 'always', label: 'Always' },
         { value: 'hover', label: 'Hover' },
         { value: 'focus', label: 'Focus' },
+        { value: 'pointer', label: 'Pointer' },
       ],
     },
     {
       type: 'number',
-      prop: 'maskRadius',
-      initialValue: 360,
-      libraryValue: 360,
-      min: 0,
-      max: 800,
-      step: 10,
-    },
-    {
-      type: 'number',
       prop: 'maskRadiusX',
-      initialValue: 100,
-      libraryValue: 0,
+      initialValue: 160,
+      libraryValue: undefined,
       min: 0,
       max: 800,
       step: 1,
@@ -76,8 +78,8 @@ export const configuration: MantineDemo = {
     {
       type: 'number',
       prop: 'maskRadiusY',
-      initialValue: 100,
-      libraryValue: 0,
+      initialValue: 160,
+      libraryValue: undefined,
       min: 0,
       max: 800,
       step: 1,
@@ -136,6 +138,7 @@ export const configuration: MantineDemo = {
       max: 0.5,
       step: 0.01,
     },
+
     {
       type: 'boolean',
       prop: 'invertMask',
@@ -163,12 +166,27 @@ export const configuration: MantineDemo = {
     {
       type: 'boolean',
       prop: 'clampToBounds',
-      initialValue: true,
-      libraryValue: true,
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
+      type: 'number',
+      prop: 'clampPadding',
+      initialValue: 0,
+      libraryValue: 0,
+      min: 0,
+      max: 200,
+      step: 1,
     },
     {
       type: 'boolean',
       prop: 'recenterOnResize',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
+      type: 'boolean',
+      prop: 'recenterOnChildrenChange',
       initialValue: false,
       libraryValue: false,
     },
