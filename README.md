@@ -13,6 +13,8 @@
 
 ## Overview
 
+This component is created on top of the [Mantine](https://mantine.dev/) library. 
+
 [Mantine Mask](https://gfazioli.github.io/mantine-mask/) wraps any React node and renders a radial or linear spotlight via CSS masking. You can drive the spotlight by the cursor (`withCursorMasks`) or fix it at coordinates (`maskX/maskYk`), tune its size (`maskRadius`) or `maskRadiusX/Y`), and control edge softness with maskFeather or the transparency start/end stops. It supports motion (animation with “lerp” easing or instant), activation modes (always, hover, pointer, focus), optional inversion (invertMask) to create hole effects, and boundary clamping with padding. It is content‑agnostic, working with images, cards, and layouts, and includes convenience props for common setups.
 
 > [!note]
