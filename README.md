@@ -1,5 +1,7 @@
 # Mantine Mask Component
 
+<img width="2752" height="1536" alt="logo-perfect" src="https://github.com/user-attachments/assets/287eb10d-5c14-4aad-baef-7f303c41e73a" />
+
 <div align="center">
   
   [![NPM version](https://img.shields.io/npm/v/%40gfazioli%2Fmantine-mask?style=for-the-badge)](https://www.npmjs.com/package/@gfazioli/mantine-mask)
