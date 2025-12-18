@@ -7,7 +7,7 @@ function Demo(props: MaskProps) {
     <Flex>
       <Mask {...props}>
         <Image
-          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+          src="https://images.unsplash.com/photo-1712705155129-0470455233c8?q=80&w=1587&auto=format&fit=crop"
           alt="Before"
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
         />
@@ -39,39 +39,10 @@ export const configuration: MantineDemo = {
   code: [{ fileName: 'Demo.tsx', code, language: 'tsx' }],
   controls: [
     {
-      type: 'segmented',
-      prop: 'variant',
-      initialValue: 'radial',
-      libraryValue: 'radial',
-      data: [
-        { value: 'radial', label: 'Radial' },
-        { value: 'linear', label: 'Linear' },
-      ],
-    },
-    {
       type: 'boolean',
       prop: 'withCursorMask',
       initialValue: false,
       libraryValue: false,
-    },
-    {
-      type: 'number',
-      prop: 'maskAngle',
-      initialValue: 90,
-      libraryValue: 90,
-      min: 0,
-      max: 360,
-      step: 1,
-    },
-    {
-      type: 'segmented',
-      prop: 'animation',
-      initialValue: 'lerp',
-      libraryValue: 'lerp',
-      data: [
-        { value: 'lerp', label: 'Lerp' },
-        { value: 'none', label: 'None' },
-      ],
     },
     {
       type: 'select',
@@ -85,6 +56,36 @@ export const configuration: MantineDemo = {
         { value: 'pointer', label: 'Pointer' },
       ],
     },
+    {
+      type: 'segmented',
+      prop: 'animation',
+      initialValue: 'lerp',
+      libraryValue: 'lerp',
+      data: [
+        { value: 'lerp', label: 'Lerp' },
+        { value: 'none', label: 'None' },
+      ],
+    },
+    {
+      type: 'segmented',
+      prop: 'variant',
+      initialValue: 'radial',
+      libraryValue: 'radial',
+      data: [
+        { value: 'radial', label: 'Radial' },
+        { value: 'linear', label: 'Linear' },
+      ],
+    },
+    {
+      type: 'number',
+      prop: 'maskAngle',
+      label: 'maskAngle (linear variant only)',
+      initialValue: 90,
+      libraryValue: 90,
+      min: 0,
+      max: 360,
+      step: 1,
+    } as any,
     {
       type: 'number',
       prop: 'maskRadiusX',
