@@ -13,23 +13,17 @@
 
 ## Overview
 
-This package provides a spotlight `Mask` wrapper built with [Mantine](https://mantine.dev/). It applies a radial/linear mask to any children, supports cursor-follow or static positions, customizable radius, and background.
+[Mantine Mask](https://gfazioli.github.io/mantine-mask/) wraps any React node and renders a radial or linear spotlight via CSS masking. You can drive the spotlight by the cursor (`withCursorMasks`) or fix it at coordinates (`maskX/maskYk`), tune its size (`maskRadius`) or `maskRadiusX/Y`), and control edge softness with maskFeather or the transparency start/end stops. It supports motion (animation with “lerp” easing or instant), activation modes (always, hover, pointer, focus), optional inversion (invertMask) to create hole effects, and boundary clamping with padding. It is content‑agnostic, working with images, cards, and layouts, and includes convenience props for common setups.
 
-[![Mantine Extensions](https://img.shields.io/badge/-Watch_the_Video-blue?style=for-the-badge&labelColor=black&logo=youtube
-)](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4)
-[![Demo and Documentation](https://img.shields.io/badge/-Demo_%26_Documentation-blue?style=for-the-badge&labelColor=black&logo=typescript
-)](https://gfazioli.github.io/mantine-mask/)
-[![Mantine Extensions HUB](https://img.shields.io/badge/-Mantine_Extensions_Hub-blue?style=for-the-badge&labelColor=blue
-)](https://mantine-extensions.vercel.app/)
-
-
-👉 You can find more components on the [Mantine Extensions Hub](https://mantine-extensions.vercel.app/) library.
+> [!note]
+>
+> → [Demo and Documentation](https://gfazioli.github.io/mantine-mask/) → [Youtube Video](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4) → [More Mantine Components](https://mantine-extensions.vercel.app/)
 
 ## Installation
 
 ```sh
 npm install @gfazioli/mantine-mask
-```
+```  
 or 
 
 ```sh
@@ -60,6 +54,6 @@ function Demo() {
 }
 ```
 
-<div align="center">
-  
+---
+
 [![Star History Chart](https://api.star-history.com/svg?repos=gfazioli/mantine-mask&type=Timeline)](https://www.star-history.com/#gfazioli/mantine-mask&Timeline)
