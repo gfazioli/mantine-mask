@@ -11,7 +11,7 @@
 
 ## Overview
 
-This package provides a spotlight `Mask` wrapper built with [Mantine](https://mantine.dev/). It applies a radial mask to any children, supports cursor-follow or static positions, customizable radius, and background.
+This package provides a spotlight `Mask` wrapper built with [Mantine](https://mantine.dev/). It applies a radial/linear mask to any children, supports cursor-follow or static positions, customizable radius, and background.
 
 [![Mantine Extensions](https://img.shields.io/badge/-Watch_the_Video-blue?style=for-the-badge&labelColor=black&logo=youtube
 )](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4)
@@ -61,5 +61,3 @@ function Demo() {
 <div align="center">
   
 [![Star History Chart](https://api.star-history.com/svg?repos=gfazioli/mantine-mask&type=Timeline)](https://www.star-history.com/#gfazioli/mantine-mask&Timeline)
-
-https://github.com/user-attachments/assets/ce2b1ba2-51f7-43d5-8477-6d8fee103fa3
