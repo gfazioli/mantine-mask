@@ -9,6 +9,7 @@ export default {
     maskAngle: 90,
     radius: 0,
     withCursorMask: false,
+    trackPointerOnDocument: false,
     maskX: 50,
     maskY: 50,
     maskRadius: 240,
@@ -34,6 +35,7 @@ export default {
     variant: { control: { type: 'select' }, options: ['radial', 'linear'] },
     maskAngle: { control: { type: 'range', min: 0, max: 360, step: 1 } },
     withCursorMask: { control: 'boolean' },
+    trackPointerOnDocument: { control: 'boolean' },
     maskX: { control: { type: 'range', min: -100, max: 100, step: 1 } },
     maskY: { control: { type: 'range', min: -100, max: 100, step: 1 } },
     maskRadius: { control: { type: 'range', min: 0, max: 2048, step: 1 } },
@@ -86,9 +88,9 @@ export function Usage() {
 
 export function WithProps(props: MaskProps) {
   return (
-    <Mask {...props}>
+    <Mask {...props} bg="black">
       <Image
-        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        src="https://docs.once-ui.com/_next/image?url=%2Fimages%2Fdocs%2Fvibe-coding-dark.jpg&w=1920&q=75"
         alt="Before"
         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
       />

@@ -45,6 +45,13 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Enable cursor-follow mask. When false, the mask uses static coordinates. @default false */
   withCursorMask?: boolean;
 
+  /**
+   * Track cursor position on the entire document instead of only inside the component.
+   * When enabled, `clampToBounds` and `clampPadding` are ignored.
+   * @default false
+   */
+  trackPointerOnDocument?: boolean;
+
   /** Horizontal position of the mask center in percentages when `withCursorMask` is false. @default 50 */
   maskX?: number;
 
@@ -136,6 +143,7 @@ export const defaultProps: Partial<MaskProps> = {
   variant: 'radial',
   maskAngle: 90,
   withCursorMask: false,
+  trackPointerOnDocument: false,
   maskX: 50,
   maskY: 50,
   maskRadius: 240,
@@ -239,6 +247,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     children,
     radius,
     withCursorMask,
+    trackPointerOnDocument,
     tabIndex,
     maskX,
     maskY,
@@ -405,11 +414,16 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     return () => cancelAnimationFrame(animationFrame);
   }, [animation, cursorPosition.x, cursorPosition.y, easing, isActive, withCursorMask]);
 
-  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!withCursorMask || !isActive) {
-      return;
+  const applyNextPosition = (next: { x: number; y: number }) => {
+    if (animation === 'none') {
+      setCursorPosition(next);
+      setSmoothPosition(next);
+    } else {
+      setCursorPosition(next);
     }
+  };
 
+  const updateFromClientPoint = (clientX: number, clientY: number) => {
     const node = containerRef.current;
     if (!node) {
       return;
@@ -418,16 +432,13 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     const rect = node.getBoundingClientRect();
     containerSizeRef.current = { width: rect.width, height: rect.height };
 
-    const rawX = event.clientX - rect.left + (cursorOffsetX ?? 0);
-    const rawY = event.clientY - rect.top + (cursorOffsetY ?? 0);
+    const rawX = clientX - rect.left + (cursorOffsetX ?? 0);
+    const rawY = clientY - rect.top + (cursorOffsetY ?? 0);
 
-    if (!clampToBounds) {
-      if (animation === 'none') {
-        setCursorPosition({ x: rawX, y: rawY });
-        setSmoothPosition({ x: rawX, y: rawY });
-      } else {
-        setCursorPosition({ x: rawX, y: rawY });
-      }
+    const shouldClamp = clampToBounds && !trackPointerOnDocument;
+
+    if (!shouldClamp) {
+      applyNextPosition({ x: rawX, y: rawY });
       return;
     }
 
@@ -443,17 +454,35 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     const minY = radiusYForClamp + padding;
     const maxY = rect.height - radiusYForClamp - padding;
 
-    const next = {
+    applyNextPosition({
       x: clampValue(rawX, minX, maxX),
       y: clampValue(rawY, minY, maxY),
+    });
+  };
+
+  useEffect(() => {
+    if (!withCursorMask || !trackPointerOnDocument) {
+      return undefined;
+    }
+
+    const handleMouseMove = (event: MouseEvent) => {
+      updateFromClientPoint(event.clientX, event.clientY);
     };
 
-    if (animation === 'none') {
-      setCursorPosition(next);
-      setSmoothPosition(next);
-    } else {
-      setCursorPosition(next);
+    document.addEventListener('mousemove', handleMouseMove);
+    return () => document.removeEventListener('mousemove', handleMouseMove);
+  }, [trackPointerOnDocument, withCursorMask]);
+
+  const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (trackPointerOnDocument) {
+      return;
     }
+
+    if (!withCursorMask || !isActive) {
+      return;
+    }
+
+    updateFromClientPoint(event.clientX, event.clientY);
   };
 
   const handlePointerEnter = () => {
