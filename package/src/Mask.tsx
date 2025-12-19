@@ -251,8 +251,15 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
   const [cursorPosition, setCursorPosition] = useState({ x: 0, y: 0 });
   const [smoothPosition, setSmoothPosition] = useState({ x: 0, y: 0 });
 
+  const initialStaticX = maskX ?? 50;
+  const initialStaticY = maskY ?? 50;
+  const [staticSmoothPosition, setStaticSmoothPosition] = useState({ x: initialStaticX, y: initialStaticY });
+  const staticTargetRef = useRef({ x: initialStaticX, y: initialStaticY });
+
   const [uncontrolledActive, setUncontrolledActive] = useState(activation === 'always');
   const isActive = active ?? (activation === 'always' ? true : uncontrolledActive);
+
+  staticTargetRef.current = { x: maskX ?? 50, y: maskY ?? 50 };
 
   useEffect(() => {
     if (activation === 'always') {
@@ -351,9 +358,16 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
         const dx = cursorPosition.x - prev.x;
         const dy = cursorPosition.y - prev.y;
 
+        const nextX = Math.round(prev.x + dx * easing);
+        const nextY = Math.round(prev.y + dy * easing);
+
+        if (nextX === prev.x && nextY === prev.y) {
+          return prev;
+        }
+
         return {
-          x: Math.round(prev.x + dx * easing),
-          y: Math.round(prev.y + dy * easing),
+          x: nextX,
+          y: nextY,
         };
       });
       animationFrame = requestAnimationFrame(animate);
@@ -362,6 +376,43 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     animationFrame = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationFrame);
   }, [animation, cursorPosition.x, cursorPosition.y, easing, isActive, withCursorMask]);
+
+  useEffect(() => {
+    if (withCursorMask || animation !== 'none') {
+      return;
+    }
+
+    setStaticSmoothPosition({ x: staticTargetRef.current.x, y: staticTargetRef.current.y });
+  }, [animation, maskX, maskY, withCursorMask]);
+
+  useEffect(() => {
+    if (withCursorMask || !isActive || animation !== 'lerp') {
+      return undefined;
+    }
+
+    let animationFrame = 0;
+
+    const animate = () => {
+      setStaticSmoothPosition((prev) => {
+        const dx = staticTargetRef.current.x - prev.x;
+        const dy = staticTargetRef.current.y - prev.y;
+
+        const nextX = Number((prev.x + dx * easing).toFixed(3));
+        const nextY = Number((prev.y + dy * easing).toFixed(3));
+
+        if (nextX === prev.x && nextY === prev.y) {
+          return prev;
+        }
+
+        return { x: nextX, y: nextY };
+      });
+
+      animationFrame = requestAnimationFrame(animate);
+    };
+
+    animationFrame = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationFrame);
+  }, [animation, easing, isActive, maskX, maskY, withCursorMask]);
 
   const applyNextPosition = (next: { x: number; y: number }) => {
     if (animation === 'none') {
@@ -479,8 +530,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
   const linearPoint = withCursorMask
     ? { x: smoothPosition.x, y: smoothPosition.y }
     : {
-        x: (containerWidth * (maskX ?? 50)) / 100,
-        y: (containerHeight * (maskY ?? 50)) / 100,
+        x: (containerWidth * (animation === 'lerp' ? staticSmoothPosition.x : (maskX ?? 50))) / 100,
+        y: (containerHeight * (animation === 'lerp' ? staticSmoothPosition.y : (maskY ?? 50))) / 100,
       };
   const linearCenter = getLinearCenterPercent(linearPoint.x, linearPoint.y, containerWidth, containerHeight, angleDegrees);
 
@@ -490,8 +541,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
         '--mask-y': `${smoothPosition.y}px`,
       } as CSSProperties)
     : ({
-        '--mask-x': `${maskX}%`,
-        '--mask-y': `${maskY}%`,
+        '--mask-x': `${animation === 'lerp' ? staticSmoothPosition.x : maskX}%`,
+        '--mask-y': `${animation === 'lerp' ? staticSmoothPosition.y : maskY}%`,
       } as CSSProperties);
 
   return (

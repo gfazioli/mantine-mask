@@ -12,4 +12,5 @@ export { maskLinearInvert } from './Mask.demo.linear-invert';
 export { maskRadius } from './Mask.demo.radius';
 export { maskReveal } from './Mask.demo.reveal';
 export { maskStatic } from './Mask.demo.static';
+export { maskStaticAnimate } from './Mask.demo.static-animate';
 export { maskZoom } from './Mask.demo.zoom';
