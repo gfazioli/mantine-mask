@@ -45,6 +45,12 @@ export const configuration: MantineDemo = {
       libraryValue: false,
     },
     {
+      type: 'boolean',
+      prop: 'trackPointerOnDocument',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
       type: 'select',
       prop: 'activation',
       initialValue: 'always',
@@ -67,16 +73,6 @@ export const configuration: MantineDemo = {
       ],
     },
     {
-      type: 'segmented',
-      prop: 'variant',
-      initialValue: 'radial',
-      libraryValue: 'radial',
-      data: [
-        { value: 'radial', label: 'Radial' },
-        { value: 'linear', label: 'Linear' },
-      ],
-    },
-    {
       type: 'number',
       prop: 'maskAngle',
       label: 'maskAngle (linear variant only)',
@@ -86,6 +82,16 @@ export const configuration: MantineDemo = {
       max: 360,
       step: 1,
     } as any,
+    {
+      type: 'segmented',
+      prop: 'variant',
+      initialValue: 'radial',
+      libraryValue: 'radial',
+      data: [
+        { value: 'radial', label: 'Radial' },
+        { value: 'linear', label: 'Linear' },
+      ],
+    },
     {
       type: 'number',
       prop: 'maskRadiusX',
@@ -158,13 +164,6 @@ export const configuration: MantineDemo = {
       max: 0.5,
       step: 0.01,
     },
-
-    {
-      type: 'boolean',
-      prop: 'invertMask',
-      initialValue: false,
-      libraryValue: false,
-    },
     {
       type: 'number',
       prop: 'cursorOffsetX',
@@ -209,6 +208,18 @@ export const configuration: MantineDemo = {
       prop: 'recenterOnChildrenChange',
       initialValue: false,
       libraryValue: false,
+    },
+    {
+      type: 'boolean',
+      prop: 'invertMask',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
+      type: 'color',
+      prop: 'bg',
+      initialValue: 'transparent',
+      libraryValue: 'transparent',
     },
   ],
 };

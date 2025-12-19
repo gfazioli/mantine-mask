@@ -26,6 +26,9 @@ You can use it in two main ways:
 - **Cursor spotlight**: the mask follows the pointer (`withCursorMask`)
 - **Static spotlight**: the mask stays at a fixed position (`maskX`/`maskY`)
 
+If you need the cursor spotlight to keep updating even when the pointer is outside the component,
+enable document-level tracking with `trackPointerOnDocument`.
+
 Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
 
 ### Quick mental model
@@ -41,12 +44,12 @@ Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
 > - `animation="none"` follows instantly
 > - `activation="pointer"` (or `activation="hover"`) toggles the mask on pointer enter/leave.
 
-
 <Demo data={demos.configuration} />
 
 ### Key props (most common)
 
 - **Position**: `withCursorMask`, `maskX`, `maskY`, `cursorOffsetX`, `cursorOffsetY`
+- **Pointer tracking**: `trackPointerOnDocument`
 - **Size**: `maskRadius`, `maskRadiusX`, `maskRadiusY`
 - **Feather**: `maskFeather` (simple), or `maskTransparencyStart` + `maskTransparencyEnd` (advanced)
 - **Visibility**: `maskOpacity`, `invertMask`
@@ -89,6 +92,21 @@ In this example the spotlight follows the cursor (`withCursorMask`) and reveals 
 >
 > - `clampToBounds`: prevents the center from going outside
 > - `clampPadding`: adds extra padding from the edges
+
+## Document-level pointer tracking
+
+By default, the cursor mask position is updated only while the pointer moves inside the component.
+
+If you want the mask to follow the pointer across the entire document (the original behavior), enable:
+
+- `withCursorMask`
+- `trackPointerOnDocument`
+
+> **NOTE**
+>
+> When `trackPointerOnDocument` is enabled, `clampToBounds` and `clampPadding` are ignored.
+
+<Demo data={demos.maskDocumentPointer} />
 
 ## Static mask origin
 

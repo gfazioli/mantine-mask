@@ -4,6 +4,7 @@ export { configuration } from './Mask.demo.configuration';
 export { convenience } from './Mask.demo.convenience';
 export { maskCustomContent } from './Mask.demo.custom-content';
 export { disable } from './Mask.demo.disable';
+export { maskDocumentPointer } from './Mask.demo.document-pointer';
 export { maskEllipse } from './Mask.demo.ellipse';
 export { maskInvert } from './Mask.demo.invert';
 export { maskLinear } from './Mask.demo.linear';
