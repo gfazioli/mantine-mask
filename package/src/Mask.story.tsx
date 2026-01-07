@@ -98,6 +98,18 @@ export function WithProps(props: MaskProps) {
   );
 }
 
+export function LinearDisable(props: MaskProps) {
+  return (
+    <Mask {...props} bg="black" variant="linear" maskAngle={0} maskY={0} recenterOnResize>
+      <Image
+        src="https://docs.once-ui.com/_next/image?url=%2Fimages%2Fdocs%2Fvibe-coding-dark.jpg&w=1920&q=75"
+        alt="Before"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}
+
 export function CursorMask() {
   return (
     <Mask withCursorMask>
