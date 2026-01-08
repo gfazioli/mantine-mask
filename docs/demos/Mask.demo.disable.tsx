@@ -32,7 +32,7 @@ function Demo(props: MaskProps) {
 
 const code = `
 import { Mask, type MaskProps } from '@gfazioli/mantine-mask';
-import { Alert, Button, Divider, Paper, Stack, Text, Textarea, Title } from '@mantine/core';
+import { Alert, Button, Paper, Stack, Text, Textarea, Title } from '@mantine/core';
 
 function Demo(props: MaskProps) {
   return (
