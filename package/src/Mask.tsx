@@ -109,10 +109,15 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Recenter the mask when children change. @default false */
   recenterOnChildrenChange?: boolean;
 
-  /** Controls when the cursor mask is active. @default 'always' */
+  /** Controls when the cursor mask is active. When set to anything other than 'always',
+   * the component maintains a Box wrapper even when inactive to handle activation events.
+   * @default 'always'
+   */
   activation?: MaskActivation;
 
-  /** Controlled active state. When provided, it overrides `activation`. */
+  /** Controlled active state. When provided, it overrides `activation`.
+   * When false, only children are rendered without the mask effect (a Box wrapper is kept if activation !== 'always').
+   */
   active?: boolean;
 
   /** Called when active state changes due to activation events. */
@@ -545,39 +550,64 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
         '--mask-y': `${animation === 'lerp' ? staticSmoothPosition.y : maskY}%`,
       } as CSSProperties);
 
-  return (
-    <Box
-      ref={mergedRef}
-      {...getStyles('root')}
-      data-with-cursor={withCursorMask}
-      onPointerMove={handlePointerMove}
-      onPointerEnter={handlePointerEnter}
-      onPointerLeave={handlePointerLeave}
-      onFocus={handleFocus}
-      onBlur={handleBlur}
-      tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
-      {...others}
-    >
-      <div
-        {...getStyles('mask', {
-          style: {
-            '--mask-radial-radius': radiusValue,
-            '--mask-radial-radius-x': resolvedRadiusX,
-            '--mask-radial-radius-y': resolvedRadiusY,
-            '--mask-linear-radius': radiusValue,
-            '--mask-angle': angleValue,
-            '--mask-linear-center': `${linearCenter}%`,
-            ...maskVariables,
-          },
-        })}
-        data-variant={variant}
-        data-invert={invertMask}
-        data-active={isActive}
+  // When activation is not 'always', we need the Box container to handle events
+  const needsContainer = activation !== 'always';
+
+  if (isActive) {
+    return (
+      <Box
+        ref={mergedRef}
+        {...getStyles('root')}
+        data-with-cursor={withCursorMask}
+        onPointerMove={handlePointerMove}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
+        {...others}
+      >
+        <div
+          {...getStyles('mask', {
+            style: {
+              '--mask-radial-radius': radiusValue,
+              '--mask-radial-radius-x': resolvedRadiusX,
+              '--mask-radial-radius-y': resolvedRadiusY,
+              '--mask-linear-radius': radiusValue,
+              '--mask-angle': angleValue,
+              '--mask-linear-center': `${linearCenter}%`,
+              ...maskVariables,
+            },
+          })}
+          data-variant={variant}
+          data-invert={invertMask}
+        >
+          {children}
+        </div>
+      </Box>
+    );
+  }
+
+  // When not active but needs event handlers, wrap in Box without mask
+  if (needsContainer) {
+    return (
+      <Box
+        ref={mergedRef}
+        {...getStyles('root')}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
+        {...others}
       >
         {children}
-      </div>
-    </Box>
-  );
+      </Box>
+    );
+  }
+
+  // activation='always' but active controlled to false, just return children
+  return children ? <>{children}</> : null;
 });
 
 Mask.classes = classes;

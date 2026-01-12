@@ -23,7 +23,7 @@ describe('Mask', () => {
     );
 
     const root = container.querySelector('[data-with-cursor]') as HTMLElement;
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
 
     expect(root.getAttribute('data-with-cursor')).toBe('false');
 
@@ -39,7 +39,7 @@ describe('Mask', () => {
       </Mask>
     );
 
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
     expect(mask.style.getPropertyValue('--mask-radial-radius-x')).toContain('6.25rem');
     expect(mask.style.getPropertyValue('--mask-radial-radius-y')).toContain('12.5rem');
   });
@@ -51,7 +51,7 @@ describe('Mask', () => {
       </Mask>
     );
 
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
     expect(mask.getAttribute('data-invert')).toBe('true');
   });
 
@@ -62,7 +62,7 @@ describe('Mask', () => {
       </Mask>
     );
 
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
 
     expect(mask.getAttribute('data-variant')).toBe('linear');
     expect(mask.style.getPropertyValue('--mask-angle')).toBe('30deg');
@@ -76,7 +76,7 @@ describe('Mask', () => {
       </Mask>
     );
 
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
 
     expect(mask.style.getPropertyValue('--mask-opacity')).toBe('0.6');
     expect(mask.style.getPropertyValue('--mask-transparency-start')).toBe('80%');
@@ -91,10 +91,12 @@ describe('Mask', () => {
       </Mask>
     );
 
-    const root = container.querySelector('[data-with-cursor]') as HTMLElement;
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    // With activation="pointer", the root container should be present for event handling
+    const root = container.querySelector('[class*="root"]') as HTMLElement;
+    expect(root).toBeTruthy();
 
-    expect(mask.getAttribute('data-active')).toBe('false');
+    // Initially, mask should not be rendered (only root for events)
+    expect(container.querySelector('[data-variant]')).toBeFalsy();
 
     fireEvent.pointerEnter(root);
     expect(onActiveChange).toHaveBeenCalledWith(true);
@@ -111,7 +113,7 @@ describe('Mask', () => {
     );
 
     const root = container.querySelector('[data-with-cursor]') as HTMLElement;
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
 
     root.getBoundingClientRect = jest.fn(
       () =>
@@ -139,7 +141,7 @@ describe('Mask', () => {
     );
 
     const root = container.querySelector('[data-with-cursor]') as HTMLElement;
-    const mask = container.querySelector('[data-active]') as HTMLElement;
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
 
     root.getBoundingClientRect = jest.fn(
       () =>
