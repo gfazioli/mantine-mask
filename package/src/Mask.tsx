@@ -317,7 +317,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [recenterOnResize]);
+  }, [recenterOnResize, active]);
 
   useEffect(() => {
     if (!recenterOnChildrenChange) {
@@ -350,7 +350,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [recenterOnChildrenChange]);
+  }, [recenterOnChildrenChange, active]);
 
   useEffect(() => {
     if (!withCursorMask || !isActive || animation !== 'lerp') {
