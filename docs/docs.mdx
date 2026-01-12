@@ -194,6 +194,11 @@ Activation can be handled automatically (with `activation`) or controlled manual
 - Use `activation` for common interactions (`always`, `hover`, `pointer`, `focus`)
 - Use the `active` prop to fully control visibility (it overrides `activation`)
 - Use `onActiveChange` to react to internal activation events
+  > **Implementation detail**
+  >
+  > When `activation` is not set to `'always'`, the component maintains a Box wrapper even when the mask is inactive.
+  > This wrapper is necessary to handle activation events (hover, pointer, focus).
+  > When `activation='always'` but `active={false}` is set externally, only the children are rendered without any wrapper.
 
 ### Focus activation (accessibility)
 

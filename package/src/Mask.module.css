@@ -83,8 +83,3 @@
     var(--mask-color, white) 100%
   );
 }
-
-.mask[data-active='false'] {
-  -webkit-mask-image: none !important;
-  mask-image: none !important;
-}
