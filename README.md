@@ -80,6 +80,7 @@ Open source thrives when those who benefit can give back—even a small monthly 
 Your help truly matters.
 
 💚 [Become a sponsor](https://github.com/sponsors/gfazioli?o=esc) today and help me keep this project reliable, up‑to‑date, and growing for everyone.
+
 ---
 https://github.com/user-attachments/assets/95b5b9bf-73cb-4c5b-9010-df593b053bdf
 
