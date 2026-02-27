@@ -1,6 +1,6 @@
 # Mantine Mask Component
 
-<img alt="Mantine Mask" src="https://github.com/gfazioli/mantine-mask/blob/master/logo.png" />
+<img alt="Mantine Mask" src="https://github.com/gfazioli/mantine-mask/blob/master/logo.jpeg" />
 
 <div align="center">
   
