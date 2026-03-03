@@ -4,7 +4,14 @@ import { MantineDemo } from '@mantinex/demo';
 
 function Demo() {
   return (
-    <Mask variant="linear" invertMask withCursorMask maskAngle={90} maskRadius={180} maskFeather={30}>
+    <Mask
+      variant="linear"
+      invertMask
+      withCursorMask
+      maskAngle={90}
+      maskRadius={180}
+      maskFeather={30}
+    >
       <Image
         src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
         alt="Before"

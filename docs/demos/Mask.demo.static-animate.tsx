@@ -27,13 +27,30 @@ function Demo() {
           Reset
         </Button>
         <Button onClick={randomize}>Random position</Button>
-        <Slider labelAlwaysOn value={easing} onChange={setEasing} min={0.01} max={1} step={0.01} style={{ width: 200 }} />
+        <Slider
+          labelAlwaysOn
+          value={easing}
+          onChange={setEasing}
+          min={0.01}
+          max={1}
+          step={0.01}
+          style={{ width: 200 }}
+        />
         <Text size="sm" c="dimmed">
           maskX: {position.x}%, maskY: {position.y}%
         </Text>
       </Group>
 
-      <Mask bg="black" withCursorMask={false} animation="lerp" easing={easing} maskX={position.x} maskY={position.y} maskRadius={320} radius={16}>
+      <Mask
+        bg="black"
+        withCursorMask={false}
+        animation="lerp"
+        easing={easing}
+        maskX={position.x}
+        maskY={position.y}
+        maskRadius={320}
+        radius={16}
+      >
         <Image
           src="https://images.unsplash.com/photo-1571769267292-e24dfadebbdc?q=80&w=3580&auto=format&fit=crop"
           alt="Before"

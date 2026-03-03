@@ -18,10 +18,15 @@ function Demo(props: MaskProps) {
           <Stack>
             <Title>Create Image to Video</Title>
             <Text>
-              Unlock the power of AI-driven video creation. Transform your images into captivating videos with just a few clicks. Perfect for marketers, content
-              creators, and social media enthusiasts looking to elevate their visual storytelling.
+              Unlock the power of AI-driven video creation. Transform your images into captivating
+              videos with just a few clicks. Perfect for marketers, content creators, and social
+              media enthusiasts looking to elevate their visual storytelling.
             </Text>
-            <Textarea disabled={props.active} placeholder="Describe your video idea..." minRows={3} />
+            <Textarea
+              disabled={props.active}
+              placeholder="Describe your video idea..."
+              minRows={3}
+            />
             <Button disabled={props.active}>Create Video</Button>
           </Stack>
         </Paper>

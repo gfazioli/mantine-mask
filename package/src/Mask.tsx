@@ -174,23 +174,25 @@ export const defaultProps: Partial<MaskProps> = {
   radius: 0,
 };
 
-const varsResolver = createVarsResolver<MaskFactory>((_, { radius, maskTransparencyEnd, maskTransparencyStart, maskFeather, maskOpacity }) => {
-  const hasFeather = maskFeather !== undefined;
-  const featherPercent = hasFeather ? normalizeFeather(maskFeather) : undefined;
-  const computedStart = hasFeather ? 100 - (featherPercent ?? 0) : maskTransparencyStart;
-  const computedEnd = hasFeather ? 100 : maskTransparencyEnd;
+const varsResolver = createVarsResolver<MaskFactory>(
+  (_, { radius, maskTransparencyEnd, maskTransparencyStart, maskFeather, maskOpacity }) => {
+    const hasFeather = maskFeather !== undefined;
+    const featherPercent = hasFeather ? normalizeFeather(maskFeather) : undefined;
+    const computedStart = hasFeather ? 100 - (featherPercent ?? 0) : maskTransparencyStart;
+    const computedEnd = hasFeather ? 100 : maskTransparencyEnd;
 
-  return {
-    root: {
-      '--mask-radius': radius === undefined ? undefined : getRadius(radius),
-    },
-    mask: {
-      '--mask-transparency-end': computedEnd !== undefined ? `${computedEnd}%` : undefined,
-      '--mask-transparency-start': computedStart !== undefined ? `${computedStart}%` : undefined,
-      '--mask-opacity': maskOpacity.toString(),
-    },
-  };
-});
+    return {
+      root: {
+        '--mask-radius': radius === undefined ? undefined : getRadius(radius),
+      },
+      mask: {
+        '--mask-transparency-end': computedEnd !== undefined ? `${computedEnd}%` : undefined,
+        '--mask-transparency-start': computedStart !== undefined ? `${computedStart}%` : undefined,
+        '--mask-opacity': maskOpacity.toString(),
+      },
+    };
+  }
+);
 
 export const Mask = factory<MaskFactory>((_props, ref) => {
   const props = useProps('Mask', defaultProps, _props);
@@ -258,7 +260,10 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
   const initialStaticX = maskX ?? 50;
   const initialStaticY = maskY ?? 50;
-  const [staticSmoothPosition, setStaticSmoothPosition] = useState({ x: initialStaticX, y: initialStaticY });
+  const [staticSmoothPosition, setStaticSmoothPosition] = useState({
+    x: initialStaticX,
+    y: initialStaticY,
+  });
   const staticTargetRef = useRef({ x: initialStaticX, y: initialStaticY });
 
   const [uncontrolledActive, setUncontrolledActive] = useState(activation === 'always');
@@ -447,8 +452,18 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       return;
     }
 
-    const radiusXNumber = typeof maskRadiusX === 'number' ? maskRadiusX : typeof maskRadius === 'number' ? maskRadius : undefined;
-    const radiusYNumber = typeof maskRadiusY === 'number' ? maskRadiusY : typeof maskRadius === 'number' ? maskRadius : undefined;
+    const radiusXNumber =
+      typeof maskRadiusX === 'number'
+        ? maskRadiusX
+        : typeof maskRadius === 'number'
+          ? maskRadius
+          : undefined;
+    const radiusYNumber =
+      typeof maskRadiusY === 'number'
+        ? maskRadiusY
+        : typeof maskRadius === 'number'
+          ? maskRadius
+          : undefined;
 
     const radiusXForClamp = radiusXNumber ?? 0;
     const radiusYForClamp = radiusYNumber ?? 0;
@@ -536,9 +551,16 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     ? { x: smoothPosition.x, y: smoothPosition.y }
     : {
         x: (containerWidth * (animation === 'lerp' ? staticSmoothPosition.x : (maskX ?? 50))) / 100,
-        y: (containerHeight * (animation === 'lerp' ? staticSmoothPosition.y : (maskY ?? 50))) / 100,
+        y:
+          (containerHeight * (animation === 'lerp' ? staticSmoothPosition.y : (maskY ?? 50))) / 100,
       };
-  const linearCenter = getLinearCenterPercent(linearPoint.x, linearPoint.y, containerWidth, containerHeight, angleDegrees);
+  const linearCenter = getLinearCenterPercent(
+    linearPoint.x,
+    linearPoint.y,
+    containerWidth,
+    containerHeight,
+    angleDegrees
+  );
 
   const maskVariables: CSSProperties = withCursorMask
     ? ({

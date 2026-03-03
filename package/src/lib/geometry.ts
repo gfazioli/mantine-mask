@@ -1,6 +1,12 @@
 import { clampValue } from './math';
 
-function getLinearCenterPercent(x: number, y: number, width: number, height: number, angleDeg: number) {
+function getLinearCenterPercent(
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+  angleDeg: number
+) {
   if (width <= 0 || height <= 0) {
     return 50;
   }
@@ -11,7 +17,12 @@ function getLinearCenterPercent(x: number, y: number, width: number, height: num
 
   const project = (px: number, py: number) => px * directionX + py * directionY;
 
-  const projections = [project(0, 0), project(width, 0), project(0, height), project(width, height)];
+  const projections = [
+    project(0, 0),
+    project(width, 0),
+    project(0, height),
+    project(width, height),
+  ];
 
   const min = Math.min(...projections);
   const max = Math.max(...projections);

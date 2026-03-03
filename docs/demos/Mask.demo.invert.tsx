@@ -15,7 +15,11 @@ function Demo() {
         />
       </Mask>
       <Text>Try to change the dark mode</Text>
-      <Switch label="Use background" checked={bg} onChange={(event) => setBg(event.currentTarget.checked)} />
+      <Switch
+        label="Use background"
+        checked={bg}
+        onChange={(event) => setBg(event.currentTarget.checked)}
+      />
     </Stack>
   );
 }

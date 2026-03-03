@@ -135,7 +135,14 @@ describe('Mask', () => {
 
   it('ignores clamping props when document tracking is enabled', () => {
     const { container } = render(
-      <Mask withCursorMask trackPointerOnDocument animation="none" clampToBounds clampPadding={20} maskRadius={100}>
+      <Mask
+        withCursorMask
+        trackPointerOnDocument
+        animation="none"
+        clampToBounds
+        clampPadding={20}
+        maskRadius={100}
+      >
         <div>content</div>
       </Mask>
     );
