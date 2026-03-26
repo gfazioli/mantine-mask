@@ -483,6 +483,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       });
     }
   }, [
+    onPositionChange,
     smoothPosition.x,
     smoothPosition.y,
     staticSmoothPosition.x,
