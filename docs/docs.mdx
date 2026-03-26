@@ -10,6 +10,9 @@ import * as demos from './demos';
 > **New features:**
 >
 > - **Responsive maskRadius** — `maskRadius`, `maskRadiusX`, and `maskRadiusY` now accept Mantine breakpoint objects (`{ base: 120, sm: 200, md: 320 }`). The spotlight size adapts to the viewport using CSS media queries with no JavaScript re-renders.
+> - **`maskTransition`** — CSS transition for smooth fade-in/fade-out when `active` changes (e.g. `maskTransition="opacity 400ms ease"`).
+> - **`onPositionChange`** — callback that exposes the current spotlight position `{ x, y }` as it moves.
+> - **`Mask.Group`** — compound component that synchronizes the cursor position across multiple `Mask` children for coordinated spotlight effects.
 > - **New type exports** — `MaskVariant`, `MaskActivation`, and `MaskAnimation` types are now exported for use in your code.
 > - **Bug fixes** — fixed stale closures in document-level pointer tracking, fixed JSDoc default values for `radius` and `clampToBounds`.
 
@@ -223,6 +226,40 @@ Activation can be handled automatically (with `activation`) or controlled manual
 
 If you use `activation="focus"`, the component becomes keyboard-friendly.
 In that case `Mask` will apply a default `tabIndex={0}` (unless you provide a different `tabIndex`).
+
+## Mask transition
+
+Use `maskTransition` to animate the mask appearance when `active` changes.
+Instead of appearing/disappearing instantly, the mask fades in and out using a CSS transition.
+
+This works great with activation modes like `hover` or `pointer`.
+
+<Demo data={demos.maskTransition} />
+
+## Position tracking
+
+Use `onPositionChange` to receive the current spotlight position as it moves.
+This is useful for synchronizing other UI elements (tooltips, labels, cursors) with the spotlight.
+
+When `withCursorMask` is enabled, positions are in pixels. When using static coordinates, positions are in percentages.
+
+<Demo data={demos.maskPositionChange} />
+
+## Mask.Group
+
+`Mask.Group` synchronizes the cursor position across multiple `Mask` components.
+Each `Mask` inside the group keeps its own independent configuration (radius, variant, inversion, feathering...),
+but they all follow the same pointer — something you cannot achieve with a single `Mask` wrapping everything.
+
+Use cases:
+
+- A grid where each card has a **different** mask effect but all react to the same cursor
+- Dashboard layouts where multiple panels reveal content in sync
+- Landing pages with coordinated spotlight animations across sections
+
+In the example below, each card uses a different mask configuration (radial, linear, inverted, elliptical), yet all spotlights follow the same cursor position:
+
+<Demo data={demos.maskGroup} />
 
 ## Any content
 

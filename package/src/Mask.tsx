@@ -16,6 +16,7 @@ import {
 } from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
 import { clampValue, getLinearCenterPercent, normalizeFeather, parseAngleDegrees } from './lib';
+import { MaskGroup, useMaskGroupContext } from './MaskGroup';
 import { MaskMediaVariables } from './MaskMediaVariables';
 import classes from './Mask.module.css';
 
@@ -134,6 +135,16 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
    */
   animation?: MaskAnimation;
 
+  /**
+   * CSS transition applied to the mask when `active` changes.
+   * Accepts any valid CSS transition value (e.g. `'opacity 300ms ease'`).
+   * When set, the mask fades in/out instead of appearing/disappearing instantly.
+   */
+  maskTransition?: string;
+
+  /** Called with the current spotlight position `{ x, y }` whenever it changes. */
+  onPositionChange?: (position: { x: number; y: number }) => void;
+
   /** Border radius
    * @default 0
    */
@@ -146,6 +157,9 @@ export type MaskFactory = Factory<{
   stylesNames: MaskStylesNames;
   variant: MaskVariant;
   vars: MaskCssVariables;
+  staticComponents: {
+    Group: typeof MaskGroup;
+  };
 }>;
 
 const defaultProps: Partial<MaskProps> = {
@@ -174,6 +188,8 @@ const defaultProps: Partial<MaskProps> = {
   active: undefined,
   onActiveChange: undefined,
   animation: 'lerp',
+  maskTransition: undefined,
+  onPositionChange: undefined,
   radius: 0,
 };
 
@@ -229,6 +245,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     active,
     onActiveChange,
     animation,
+    maskTransition,
+    onPositionChange,
 
     classNames,
     style,
@@ -253,6 +271,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     varsResolver,
   });
 
+  const groupContext = useMaskGroupContext();
   const responsiveClassName = useRandomClassName();
 
   const maskRadiusBase = getBaseValue(maskRadius) ?? 240;
@@ -433,6 +452,31 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     return () => cancelAnimationFrame(animationFrame);
   }, [animation, easing, isActive, maskX, maskY, withCursorMask]);
 
+  // Notify position changes
+  useEffect(() => {
+    if (!onPositionChange) {
+      return;
+    }
+
+    if (withCursorMask) {
+      onPositionChange({ x: smoothPosition.x, y: smoothPosition.y });
+    } else {
+      onPositionChange({
+        x: animation === 'lerp' ? staticSmoothPosition.x : (maskX ?? 50),
+        y: animation === 'lerp' ? staticSmoothPosition.y : (maskY ?? 50),
+      });
+    }
+  }, [
+    smoothPosition.x,
+    smoothPosition.y,
+    staticSmoothPosition.x,
+    staticSmoothPosition.y,
+    withCursorMask,
+    animation,
+    maskX,
+    maskY,
+  ]);
+
   const applyNextPosition = (next: { x: number; y: number }) => {
     if (animation === 'none') {
       setCursorPosition(next);
@@ -515,6 +559,24 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     return () => document.removeEventListener('mousemove', handleMouseMove);
   }, [trackPointerOnDocument, updateFromClientPoint, withCursorMask]);
 
+  // Consume group context position when inside a Mask.Group
+  useEffect(() => {
+    if (!groupContext || !withCursorMask || !isActive) {
+      return;
+    }
+
+    if (groupContext.pointerInside) {
+      updateFromClientPoint(groupContext.clientX, groupContext.clientY);
+    }
+  }, [
+    groupContext?.clientX,
+    groupContext?.clientY,
+    groupContext?.pointerInside,
+    withCursorMask,
+    isActive,
+    updateFromClientPoint,
+  ]);
+
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (trackPointerOnDocument) {
       return;
@@ -589,8 +651,35 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
   // When activation is not 'always', we need the Box container to handle events
   const needsContainer = activation !== 'always';
+  const hasTransition = !!maskTransition;
 
-  if (isActive) {
+  const transitionStyle: CSSProperties | undefined = hasTransition
+    ? ({ '--mask-transition': maskTransition } as CSSProperties)
+    : undefined;
+
+  const maskContent = (
+    <div
+      {...getStyles('mask', {
+        style: {
+          '--mask-angle': angleValue,
+          '--mask-linear-center': `${linearCenter}%`,
+          ...maskVariables,
+          ...transitionStyle,
+        },
+      })}
+      data-variant={variant}
+      data-invert={invertMask}
+      data-active={isActive || !hasTransition ? undefined : false}
+    >
+      {children}
+    </div>
+  );
+
+  // When maskTransition is set, always render the mask div (with data-active controlling opacity)
+  // Otherwise, use the original conditional rendering
+  const shouldRenderMask = isActive || hasTransition;
+
+  if (shouldRenderMask || needsContainer) {
     return (
       <>
         <MaskMediaVariables
@@ -611,45 +700,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
           tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
           {...others}
         >
-          <div
-            {...getStyles('mask', {
-              style: {
-                '--mask-angle': angleValue,
-                '--mask-linear-center': `${linearCenter}%`,
-                ...maskVariables,
-              },
-            })}
-            data-variant={variant}
-            data-invert={invertMask}
-          >
-            {children}
-          </div>
-        </Box>
-      </>
-    );
-  }
-
-  // When not active but needs event handlers, wrap in Box without mask
-  if (needsContainer) {
-    return (
-      <>
-        <MaskMediaVariables
-          maskRadius={maskRadius}
-          maskRadiusX={maskRadiusX}
-          maskRadiusY={maskRadiusY}
-          selector={`.${responsiveClassName}`}
-        />
-        <Box
-          ref={mergedRef}
-          {...getStyles('root', { className: responsiveClassName })}
-          onPointerEnter={handlePointerEnter}
-          onPointerLeave={handlePointerLeave}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
-          tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
-          {...others}
-        >
-          {children}
+          {shouldRenderMask ? maskContent : children}
         </Box>
       </>
     );
@@ -661,3 +712,4 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
 Mask.classes = classes;
 Mask.displayName = 'Mask';
+Mask.Group = MaskGroup;
