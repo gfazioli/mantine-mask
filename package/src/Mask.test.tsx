@@ -324,4 +324,66 @@ describe('Mask', () => {
     expect(container.querySelector('style')).toBeTruthy();
     expect(container.querySelector('[data-variant]')).toBeTruthy();
   });
+
+  it('applies maskTransition as CSS variable on mask element', () => {
+    const { container } = render(
+      <Mask activation="hover" maskTransition="opacity 300ms ease">
+        <div>content</div>
+      </Mask>
+    );
+
+    // With maskTransition, mask div should always be rendered (even when inactive)
+    const mask = container.querySelector('[data-variant]') as HTMLElement;
+    expect(mask).toBeTruthy();
+    expect(mask.style.getPropertyValue('--mask-transition')).toBe('opacity 300ms ease');
+    expect(mask.getAttribute('data-active')).toBe('false');
+  });
+
+  it('calls onPositionChange when position updates', () => {
+    const onPositionChange = jest.fn();
+    const { container } = render(
+      <Mask
+        withCursorMask
+        trackPointerOnDocument
+        animation="none"
+        onPositionChange={onPositionChange}
+      >
+        <div>content</div>
+      </Mask>
+    );
+
+    const root = container.querySelector('[data-with-cursor]') as HTMLElement;
+    root.getBoundingClientRect = jest.fn(
+      () =>
+        ({
+          left: 0,
+          top: 0,
+          width: 300,
+          height: 300,
+          right: 300,
+          bottom: 300,
+        }) as unknown as DOMRect
+    );
+
+    fireEvent.mouseMove(document, { clientX: 100, clientY: 150 });
+
+    expect(onPositionChange).toHaveBeenCalledWith({ x: 100, y: 150 });
+  });
+
+  it('renders Mask.Group with children', () => {
+    const { container } = render(
+      <Mask.Group>
+        <Mask withCursorMask>
+          <div>first</div>
+        </Mask>
+        <Mask withCursorMask>
+          <div>second</div>
+        </Mask>
+      </Mask.Group>
+    );
+
+    expect(container.textContent).toContain('first');
+    expect(container.textContent).toContain('second');
+    expect(container.querySelectorAll('[data-variant]').length).toBe(2);
+  });
 });

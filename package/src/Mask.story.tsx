@@ -200,3 +200,46 @@ export function HoverActivation() {
     </Mask>
   );
 }
+
+export function TransitionEffect() {
+  return (
+    <Mask withCursorMask activation="hover" maskRadius={240} maskTransition="opacity 400ms ease">
+      <SampleContent />
+    </Mask>
+  );
+}
+
+export function PositionChange() {
+  const [pos, setPos] = React.useState({ x: 0, y: 0 });
+  return (
+    <div>
+      <Mask withCursorMask maskRadius={200} onPositionChange={setPos}>
+        <SampleContent />
+      </Mask>
+      <Text mt="xs" fz="sm">
+        x: {Math.round(pos.x)}, y: {Math.round(pos.y)}
+      </Text>
+    </div>
+  );
+}
+
+export function GroupExample() {
+  return (
+    <Mask.Group style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+      <Mask withCursorMask maskRadius={120}>
+        <Image
+          src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+          alt="1"
+          style={{ width: '100%', height: 200, objectFit: 'cover' }}
+        />
+      </Mask>
+      <Mask withCursorMask maskRadius={120}>
+        <Image
+          src="https://images.unsplash.com/photo-1519114056088-b877fe073a5e?w=800&auto=format&fit=crop"
+          alt="2"
+          style={{ width: '100%', height: 200, objectFit: 'cover' }}
+        />
+      </Mask>
+    </Mask.Group>
+  );
+}

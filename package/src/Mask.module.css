@@ -6,6 +6,7 @@
 
 .mask {
   opacity: var(--mask-opacity, 1);
+  transition: var(--mask-transition);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
@@ -73,6 +74,10 @@
     transparent var(--mask-transparency-start, 0%),
     var(--mask-color, white) var(--mask-transparency-end, 100%)
   );
+}
+
+.mask[data-active='false'] {
+  opacity: 0;
 }
 
 .mask[data-variant='linear'][data-invert='true'] {
