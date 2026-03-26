@@ -323,6 +323,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
     const rect = node.getBoundingClientRect();
     containerSizeRef.current = { width: rect.width, height: rect.height };
+
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     setCursorPosition({ x: centerX, y: centerY });
