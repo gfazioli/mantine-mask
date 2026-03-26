@@ -17,9 +17,24 @@
 
 ## Overview
 
-This component is created on top of the [Mantine](https://mantine.dev/) library. 
+This component is created on top of the [Mantine](https://mantine.dev/) library.
 
-[Mantine Mask](https://gfazioli.github.io/mantine-mask/) wraps any React node and renders a radial or linear spotlight via CSS masking. You can drive the spotlight by the cursor (`withCursorMasks`) or fix it at coordinates (`maskX/maskYk`), tune its size (`maskRadius`) or `maskRadiusX/Y`), and control edge softness with maskFeather or the transparency start/end stops. It supports motion (animation with “lerp” easing or instant), activation modes (always, hover, pointer, focus), optional inversion (invertMask) to create hole effects, and boundary clamping with padding. It is content‑agnostic, working with images, cards, and layouts, and includes convenience props for common setups.
+[Mantine Mask](https://gfazioli.github.io/mantine-mask/) wraps any React node and renders a radial or linear spotlight via CSS masking. You can drive the spotlight by the cursor (`withCursorMask`) or fix it at coordinates (`maskX`/`maskY`), tune its size (`maskRadius` or `maskRadiusX`/`maskRadiusY`), and control edge softness with `maskFeather` or the transparency start/end stops.
+
+### Features
+
+- **Two variants**: radial (elliptical spotlight) and linear (band/stripe effect)
+- **Cursor-follow** or **static** spotlight positioning
+- **Responsive `maskRadius`**: accepts Mantine breakpoint objects for viewport-adaptive sizing
+- **`Mask.Group`**: compound component to synchronize spotlights across multiple Mask children
+- **`maskSmoothing`**: eased multi-stop gradients that eliminate hard edge artifacts
+- **`maskTransition`**: CSS transitions for smooth fade-in/fade-out on activation
+- **`onPositionChange`**: callback to track spotlight position in real time
+- **Activation modes**: always, hover, pointer, focus — with controlled/uncontrolled state
+- **Animation**: lerp (smooth easing) or instant cursor following
+- **Inversion**: `invertMask` creates hole effects (transparent center, visible outside)
+- **Boundary clamping** with configurable padding
+- **Content-agnostic**: works with images, cards, text, and any React content
 
 > [!note]
 >
