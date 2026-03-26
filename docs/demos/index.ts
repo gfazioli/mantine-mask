@@ -10,6 +10,7 @@ export { maskInvert } from './Mask.demo.invert';
 export { maskLinear } from './Mask.demo.linear';
 export { maskLinearInvert } from './Mask.demo.linear-invert';
 export { maskRadius } from './Mask.demo.radius';
+export { maskResponsive } from './Mask.demo.responsive';
 export { maskReveal } from './Mask.demo.reveal';
 export { maskStatic } from './Mask.demo.static';
 export { maskStaticAnimate } from './Mask.demo.static-animate';

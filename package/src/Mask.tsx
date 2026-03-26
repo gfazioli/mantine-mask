@@ -1,19 +1,22 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   createVarsResolver,
   factory,
+  getBaseValue,
   getRadius,
-  rem,
   StylesApiProps,
   useProps,
+  useRandomClassName,
   useStyles,
   type BoxProps,
   type Factory,
   type MantineRadius,
+  type StyleProp,
 } from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
 import { clampValue, getLinearCenterPercent, normalizeFeather, parseAngleDegrees } from './lib';
+import { MaskMediaVariables } from './MaskMediaVariables';
 import classes from './Mask.module.css';
 
 /** Available mask variants */
@@ -79,14 +82,14 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Easing factor for cursor-follow mask animation (0 to 1). Lower values result in slower easing. @default 0.12 */
   easing?: number;
 
-  /** Radius of the mask. Accepts numbers (px) or any CSS length unit. @default 240 */
-  maskRadius?: number | string;
+  /** Radius of the mask. Accepts numbers (px) or any CSS length unit. Supports responsive object. @default 240 */
+  maskRadius?: StyleProp<number | string>;
 
-  /** Horizontal radius of the mask. If set, it overrides `maskRadius` on X axis. */
-  maskRadiusX?: number | string;
+  /** Horizontal radius of the mask. If set, it overrides `maskRadius` on X axis. Supports responsive object. */
+  maskRadiusX?: StyleProp<number | string>;
 
-  /** Vertical radius of the mask. If set, it overrides `maskRadius` on Y axis. */
-  maskRadiusY?: number | string;
+  /** Vertical radius of the mask. If set, it overrides `maskRadius` on Y axis. Supports responsive object. */
+  maskRadiusY?: StyleProp<number | string>;
 
   /** Invert mask: hide center and show outside. @default false */
   invertMask?: boolean;
@@ -97,7 +100,7 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Cursor offset on Y axis (px) when `withCursorMask` is true. @default 0 */
   cursorOffsetY?: number;
 
-  /** Constrain cursor-follow mask to stay inside container bounds when possible. @default true */
+  /** Constrain cursor-follow mask to stay inside container bounds when possible. @default false */
   clampToBounds?: boolean;
 
   /** Extra padding (px) applied when `clampToBounds` is enabled. @default 0 */
@@ -132,7 +135,7 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   animation?: MaskAnimation;
 
   /** Border radius
-   * @default 'md'
+   * @default 0
    */
   radius?: MantineRadius | (string & {}) | number;
 }
@@ -145,7 +148,7 @@ export type MaskFactory = Factory<{
   vars: MaskCssVariables;
 }>;
 
-export const defaultProps: Partial<MaskProps> = {
+const defaultProps: Partial<MaskProps> = {
   variant: 'radial',
   maskAngle: 90,
   withCursorMask: false,
@@ -249,6 +252,12 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     vars,
     varsResolver,
   });
+
+  const responsiveClassName = useRandomClassName();
+
+  const maskRadiusBase = getBaseValue(maskRadius) ?? 240;
+  const maskRadiusXBase = getBaseValue(maskRadiusX);
+  const maskRadiusYBase = getBaseValue(maskRadiusY);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const mergedRef = useMergedRef(containerRef, ref);
@@ -433,52 +442,65 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     }
   };
 
-  const updateFromClientPoint = (clientX: number, clientY: number) => {
-    const node = containerRef.current;
-    if (!node) {
-      return;
-    }
+  const updateFromClientPoint = useCallback(
+    (clientX: number, clientY: number) => {
+      const node = containerRef.current;
+      if (!node) {
+        return;
+      }
 
-    const rect = node.getBoundingClientRect();
-    containerSizeRef.current = { width: rect.width, height: rect.height };
+      const rect = node.getBoundingClientRect();
+      containerSizeRef.current = { width: rect.width, height: rect.height };
 
-    const rawX = clientX - rect.left + (cursorOffsetX ?? 0);
-    const rawY = clientY - rect.top + (cursorOffsetY ?? 0);
+      const rawX = clientX - rect.left + (cursorOffsetX ?? 0);
+      const rawY = clientY - rect.top + (cursorOffsetY ?? 0);
 
-    const shouldClamp = clampToBounds && !trackPointerOnDocument;
+      const shouldClamp = clampToBounds && !trackPointerOnDocument;
 
-    if (!shouldClamp) {
-      applyNextPosition({ x: rawX, y: rawY });
-      return;
-    }
+      if (!shouldClamp) {
+        applyNextPosition({ x: rawX, y: rawY });
+        return;
+      }
 
-    const radiusXNumber =
-      typeof maskRadiusX === 'number'
-        ? maskRadiusX
-        : typeof maskRadius === 'number'
-          ? maskRadius
-          : undefined;
-    const radiusYNumber =
-      typeof maskRadiusY === 'number'
-        ? maskRadiusY
-        : typeof maskRadius === 'number'
-          ? maskRadius
-          : undefined;
+      const radiusXNumber =
+        typeof maskRadiusXBase === 'number'
+          ? maskRadiusXBase
+          : typeof maskRadiusBase === 'number'
+            ? maskRadiusBase
+            : undefined;
+      const radiusYNumber =
+        typeof maskRadiusYBase === 'number'
+          ? maskRadiusYBase
+          : typeof maskRadiusBase === 'number'
+            ? maskRadiusBase
+            : undefined;
 
-    const radiusXForClamp = radiusXNumber ?? 0;
-    const radiusYForClamp = radiusYNumber ?? 0;
+      const radiusXForClamp = radiusXNumber ?? 0;
+      const radiusYForClamp = radiusYNumber ?? 0;
 
-    const padding = clampPadding ?? 0;
-    const minX = radiusXForClamp + padding;
-    const maxX = rect.width - radiusXForClamp - padding;
-    const minY = radiusYForClamp + padding;
-    const maxY = rect.height - radiusYForClamp - padding;
+      const padding = clampPadding ?? 0;
+      const minX = radiusXForClamp + padding;
+      const maxX = rect.width - radiusXForClamp - padding;
+      const minY = radiusYForClamp + padding;
+      const maxY = rect.height - radiusYForClamp - padding;
 
-    applyNextPosition({
-      x: clampValue(rawX, minX, maxX),
-      y: clampValue(rawY, minY, maxY),
-    });
-  };
+      applyNextPosition({
+        x: clampValue(rawX, minX, maxX),
+        y: clampValue(rawY, minY, maxY),
+      });
+    },
+    [
+      animation,
+      clampToBounds,
+      clampPadding,
+      cursorOffsetX,
+      cursorOffsetY,
+      maskRadiusBase,
+      maskRadiusXBase,
+      maskRadiusYBase,
+      trackPointerOnDocument,
+    ]
+  );
 
   useEffect(() => {
     if (!withCursorMask || !trackPointerOnDocument) {
@@ -491,7 +513,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
     document.addEventListener('mousemove', handleMouseMove);
     return () => document.removeEventListener('mousemove', handleMouseMove);
-  }, [trackPointerOnDocument, withCursorMask]);
+  }, [trackPointerOnDocument, updateFromClientPoint, withCursorMask]);
 
   const handlePointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
     if (trackPointerOnDocument) {
@@ -528,13 +550,6 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       setActive(false);
     }
   };
-
-  const radiusXValue = typeof maskRadiusX === 'number' ? rem(maskRadiusX) : maskRadiusX;
-  const radiusYValue = typeof maskRadiusY === 'number' ? rem(maskRadiusY) : maskRadiusY;
-  const radiusValue = typeof maskRadius === 'number' ? rem(maskRadius) : maskRadius;
-
-  const resolvedRadiusX = radiusXValue ?? radiusValue;
-  const resolvedRadiusY = radiusYValue ?? radiusValue;
 
   const angleDegrees = parseAngleDegrees(maskAngle, 90);
   const angleValue =
@@ -577,54 +592,66 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
 
   if (isActive) {
     return (
-      <Box
-        ref={mergedRef}
-        {...getStyles('root')}
-        data-with-cursor={withCursorMask}
-        onPointerMove={handlePointerMove}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
-        {...others}
-      >
-        <div
-          {...getStyles('mask', {
-            style: {
-              '--mask-radial-radius': radiusValue,
-              '--mask-radial-radius-x': resolvedRadiusX,
-              '--mask-radial-radius-y': resolvedRadiusY,
-              '--mask-linear-radius': radiusValue,
-              '--mask-angle': angleValue,
-              '--mask-linear-center': `${linearCenter}%`,
-              ...maskVariables,
-            },
-          })}
-          data-variant={variant}
-          data-invert={invertMask}
+      <>
+        <MaskMediaVariables
+          maskRadius={maskRadius}
+          maskRadiusX={maskRadiusX}
+          maskRadiusY={maskRadiusY}
+          selector={`.${responsiveClassName}`}
+        />
+        <Box
+          ref={mergedRef}
+          {...getStyles('root', { className: responsiveClassName })}
+          data-with-cursor={withCursorMask}
+          onPointerMove={handlePointerMove}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
+          {...others}
         >
-          {children}
-        </div>
-      </Box>
+          <div
+            {...getStyles('mask', {
+              style: {
+                '--mask-angle': angleValue,
+                '--mask-linear-center': `${linearCenter}%`,
+                ...maskVariables,
+              },
+            })}
+            data-variant={variant}
+            data-invert={invertMask}
+          >
+            {children}
+          </div>
+        </Box>
+      </>
     );
   }
 
   // When not active but needs event handlers, wrap in Box without mask
   if (needsContainer) {
     return (
-      <Box
-        ref={mergedRef}
-        {...getStyles('root')}
-        onPointerEnter={handlePointerEnter}
-        onPointerLeave={handlePointerLeave}
-        onFocus={handleFocus}
-        onBlur={handleBlur}
-        tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
-        {...others}
-      >
-        {children}
-      </Box>
+      <>
+        <MaskMediaVariables
+          maskRadius={maskRadius}
+          maskRadiusX={maskRadiusX}
+          maskRadiusY={maskRadiusY}
+          selector={`.${responsiveClassName}`}
+        />
+        <Box
+          ref={mergedRef}
+          {...getStyles('root', { className: responsiveClassName })}
+          onPointerEnter={handlePointerEnter}
+          onPointerLeave={handlePointerLeave}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
+          {...others}
+        >
+          {children}
+        </Box>
+      </>
     );
   }
 
