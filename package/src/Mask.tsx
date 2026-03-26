@@ -748,17 +748,17 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
       })}
       data-variant={!maskSmoothing ? variant : undefined}
       data-invert={!maskSmoothing ? invertMask : undefined}
-      data-active={isActive || !hasTransition ? undefined : false}
+      data-active={isActive ? undefined : false}
     >
       {children}
     </div>
   );
 
-  // When maskTransition is set, always render the mask div (with data-active controlling opacity)
-  // Otherwise, use the original conditional rendering
-  const shouldRenderMask = isActive || hasTransition;
+  // Always render maskContent when needsContainer to keep DOM structure stable (no layout shift).
+  // The mask effect is controlled via data-active and CSS opacity.
+  const shouldRenderMask = isActive || hasTransition || needsContainer;
 
-  if (shouldRenderMask || needsContainer) {
+  if (shouldRenderMask) {
     return (
       <>
         <MaskMediaVariables
@@ -779,7 +779,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
           tabIndex={activation === 'focus' ? (tabIndex ?? 0) : tabIndex}
           {...others}
         >
-          {shouldRenderMask ? maskContent : children}
+          {maskContent}
         </Box>
       </>
     );
