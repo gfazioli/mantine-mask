@@ -43,9 +43,15 @@ lib/
   angles.ts           # parseAngleDegrees(angle, fallback)
   feather.ts          # normalizeFeather(feather) — maps 0-100 to gradient stops
   geometry.ts         # getLinearCenterPercent() — projects point onto gradient axis
+  gradient.ts         # generateSmoothedRadialGradient/LinearGradient — eased multi-stop gradients
+MaskGroup/
+  MaskGroup.tsx       # Compound component for synchronized spotlights
+  MaskGroup.context.ts # React context for shared cursor position
+  MaskGroup.module.css # Group styles
+  index.ts            # Re-exports
 ```
 
-Single-component package — `Mask` is the only exported component, built with Mantine's `factory<MaskFactory>` pattern (`useProps`, `useStyles`, `createVarsResolver`).
+Compound component package — `Mask` is the main component with `Mask.Group` as static sub-component, built with Mantine's `factory<MaskFactory>` pattern (`useProps`, `useStyles`, `createVarsResolver`).
 
 ### Build Pipeline
 Rollup bundles to dual ESM (`dist/esm/`) and CJS (`dist/cjs/`) with `'use client'` banner. CSS modules are hashed with `hash-css-selector` (prefix `me`). TypeScript declarations via `rollup-plugin-dts`. CSS is split into `styles.css` and `styles.layer.css` (layered version).
@@ -76,7 +82,19 @@ The `activation` prop controls when the mask effect is visible:
 - `hover`/`pointer`: Active on pointer enter, inactive on pointer leave
 - `focus`: Active on focus, inactive on blur (auto-sets `tabIndex={0}`)
 
-Supports controlled mode via `active` prop + `onActiveChange` callback. When inactive with `activation !== 'always'`, a Box wrapper is kept for event handling but the mask div is not rendered.
+Supports controlled mode via `active` prop + `onActiveChange` callback. When inactive with `activation !== 'always'`, the mask div is always rendered (with `data-active="false"` to disable the mask effect) to prevent layout shifts.
+
+### Mask transition
+`maskTransition` prop applies a CSS transition to the mask div (e.g. `"opacity 400ms ease"`), enabling smooth fade-in/fade-out when `active` changes. When set, the mask div is always rendered with `data-active` controlling visibility.
+
+### Position tracking
+`onPositionChange` callback receives `{ x, y }` whenever the spotlight position changes. Pixel values for cursor mode, percentages for static mode.
+
+### Mask.Group (compound component)
+`Mask.Group` wraps multiple `Mask` components and shares cursor position via React Context (`MaskGroupContext`). Each child `Mask` keeps its own configuration but follows the same pointer. The group tracks `pointerMove` on its root Box and distributes `clientX`/`clientY` to children via `useMaskGroupContext()`.
+
+### Gradient smoothing
+`maskSmoothing` generates eased multi-stop gradients (using `smootherstep` function with 12 stops) that eliminate the hard edge/ring artifact in CSS gradients. Implemented in `lib/gradient.ts` with `generateSmoothedRadialGradient` and `generateSmoothedLinearGradient`. When active, the `mask-image` is set via JS inline style instead of CSS variables.
 
 ### Utility library (`lib/`)
 - `clampValue`: Math.min/max with midpoint fallback when max < min
