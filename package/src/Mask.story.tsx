@@ -243,3 +243,27 @@ export function GroupExample() {
     </Mask.Group>
   );
 }
+
+export function SmoothedRadial() {
+  return (
+    <Mask maskSmoothing maskRadius={200} maskTransparencyStart={70}>
+      <Image
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        alt="Smoothed"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}
+
+export function SmoothedLinear() {
+  return (
+    <Mask maskSmoothing variant="linear" maskRadius={200} withCursorMask>
+      <Image
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        alt="Smoothed linear"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}

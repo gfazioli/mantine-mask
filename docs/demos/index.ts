@@ -14,6 +14,7 @@ export { maskPositionChange } from './Mask.demo.position-change';
 export { maskRadius } from './Mask.demo.radius';
 export { maskResponsive } from './Mask.demo.responsive';
 export { maskReveal } from './Mask.demo.reveal';
+export { maskSmoothingDemo } from './Mask.demo.smoothing';
 export { maskStatic } from './Mask.demo.static';
 export { maskStaticAnimate } from './Mask.demo.static-animate';
 export { maskTransition } from './Mask.demo.transition';

@@ -216,6 +216,12 @@ export const configuration: MantineDemo = {
       libraryValue: false,
     },
     {
+      type: 'boolean',
+      prop: 'maskSmoothing',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
       type: 'color',
       prop: 'bg',
       initialValue: 'transparent',

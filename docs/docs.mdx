@@ -13,6 +13,7 @@ import * as demos from './demos';
 > - **`maskTransition`** — CSS transition for smooth fade-in/fade-out when `active` changes (e.g. `maskTransition="opacity 400ms ease"`).
 > - **`onPositionChange`** — callback that exposes the current spotlight position `{ x, y }` as it moves.
 > - **`Mask.Group`** — compound component that synchronizes the cursor position across multiple `Mask` children for coordinated spotlight effects.
+> - **`maskSmoothing`** — eased multi-stop gradients that eliminate the hard edge / bright ring artifact in both radial and linear variants.
 > - **New type exports** — `MaskVariant`, `MaskActivation`, and `MaskAnimation` types are now exported.
 > - **Bug fixes** — fixed stale closures in document-level pointer tracking, fixed JSDoc default values for `radius` and `clampToBounds`.
 
@@ -147,6 +148,15 @@ If you need an oval shape, use `maskRadiusX` and `maskRadiusY`.
 This is useful for wide headers, cards, or panoramic images.
 
 <Demo data={demos.maskEllipse} />
+
+## Gradient smoothing
+
+By default, CSS gradients use linear interpolation between color stops, which can produce a visible
+"ring" or hard edge — especially when `maskTransparencyStart` is high (radial) or when the linear
+variant has a narrow band. Enable `maskSmoothing` to replace the 2-stop gradient with an eased
+multi-stop gradient that creates a much smoother fade.
+
+<Demo data={demos.maskSmoothingDemo} />
 
 ## Responsive maskRadius
 

@@ -386,4 +386,34 @@ describe('Mask', () => {
     expect(container.textContent).toContain('second');
     expect(container.querySelectorAll('[data-variant]').length).toBe(2);
   });
+
+  it('applies smoothed gradient inline style when maskSmoothing is enabled', () => {
+    const { container } = render(
+      <Mask maskSmoothing maskRadius={200} maskTransparencyStart={50}>
+        <div>content</div>
+      </Mask>
+    );
+
+    const mask = container.querySelector('.mantine-Mask-mask') as HTMLElement;
+    expect(mask).toBeTruthy();
+    // When smoothing is active, data-variant is not set (gradient is inline)
+    expect(mask.getAttribute('data-variant')).toBeNull();
+    // Inline mask-image should contain radial-gradient
+    const maskImage = mask.style.getPropertyValue('mask-image');
+    expect(maskImage).toContain('radial-gradient');
+    expect(maskImage).toContain('rgba');
+  });
+
+  it('applies smoothed linear gradient when maskSmoothing with linear variant', () => {
+    const { container } = render(
+      <Mask maskSmoothing variant="linear" maskRadius={200}>
+        <div>content</div>
+      </Mask>
+    );
+
+    const mask = container.querySelector('.mantine-Mask-mask') as HTMLElement;
+    expect(mask).toBeTruthy();
+    const maskImage = mask.style.getPropertyValue('mask-image');
+    expect(maskImage).toContain('linear-gradient');
+  });
 });

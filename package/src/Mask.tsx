@@ -15,7 +15,14 @@ import {
   type StyleProp,
 } from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
-import { clampValue, getLinearCenterPercent, normalizeFeather, parseAngleDegrees } from './lib';
+import {
+  clampValue,
+  generateSmoothedLinearGradient,
+  generateSmoothedRadialGradient,
+  getLinearCenterPercent,
+  normalizeFeather,
+  parseAngleDegrees,
+} from './lib';
 import { MaskGroup, useMaskGroupContext } from './MaskGroup';
 import { MaskMediaVariables } from './MaskMediaVariables';
 import classes from './Mask.module.css';
@@ -145,6 +152,12 @@ export interface MaskProps extends BoxProps, StylesApiProps<MaskFactory> {
   /** Called with the current spotlight position `{ x, y }` whenever it changes. */
   onPositionChange?: (position: { x: number; y: number }) => void;
 
+  /** Enable smoothed gradient transitions using eased multi-stop gradients.
+   * Eliminates the hard edge / bright ring artifact in both radial and linear variants.
+   * @default false
+   */
+  maskSmoothing?: boolean;
+
   /** Border radius
    * @default 0
    */
@@ -190,6 +203,7 @@ const defaultProps: Partial<MaskProps> = {
   animation: 'lerp',
   maskTransition: undefined,
   onPositionChange: undefined,
+  maskSmoothing: false,
   radius: 0,
 };
 
@@ -247,6 +261,7 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     animation,
     maskTransition,
     onPositionChange,
+    maskSmoothing,
 
     classNames,
     style,
@@ -658,6 +673,68 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
     ? ({ '--mask-transition': maskTransition } as CSSProperties)
     : undefined;
 
+  // Compute smoothed gradient when maskSmoothing is enabled
+  const hasFeather = maskFeather !== undefined;
+  const featherPercent = hasFeather ? normalizeFeather(maskFeather) : undefined;
+  const computedStart = hasFeather ? 100 - (featherPercent ?? 0) : (maskTransparencyStart ?? 0);
+  const computedEnd = hasFeather ? 100 : (maskTransparencyEnd ?? 100);
+
+  const maskRadiusBaseRem =
+    typeof maskRadiusBase === 'number' ? `${maskRadiusBase / 16}rem` : String(maskRadiusBase);
+  const maskRadiusXBaseRem = maskRadiusXBase
+    ? typeof maskRadiusXBase === 'number'
+      ? `${maskRadiusXBase / 16}rem`
+      : String(maskRadiusXBase)
+    : maskRadiusBaseRem;
+  const maskRadiusYBaseRem = maskRadiusYBase
+    ? typeof maskRadiusYBase === 'number'
+      ? `${maskRadiusYBase / 16}rem`
+      : String(maskRadiusYBase)
+    : maskRadiusBaseRem;
+
+  let smoothingStyle: CSSProperties | undefined;
+
+  if (maskSmoothing) {
+    const xPos = withCursorMask
+      ? `${smoothPosition.x}px`
+      : `${animation === 'lerp' ? staticSmoothPosition.x : maskX}%`;
+    const yPos = withCursorMask
+      ? `${smoothPosition.y}px`
+      : `${animation === 'lerp' ? staticSmoothPosition.y : maskY}%`;
+
+    let gradientValue: string;
+
+    if (variant === 'linear') {
+      // For linear, solidSize and fadeSize match the CSS calc logic
+      const solidSize = `calc(${maskRadiusBaseRem} * ${computedStart / 100})`;
+      const fadeSize = `calc(${maskRadiusBaseRem} * ${computedEnd / 100})`;
+
+      gradientValue = generateSmoothedLinearGradient({
+        angle: angleValue,
+        center: `${linearCenter}%`,
+        solidSize,
+        fadeSize,
+        invert: !!invertMask,
+      });
+    } else {
+      gradientValue = generateSmoothedRadialGradient({
+        shape: 'ellipse',
+        radiusX: maskRadiusXBaseRem,
+        radiusY: maskRadiusYBaseRem,
+        x: xPos,
+        y: yPos,
+        start: computedStart,
+        end: computedEnd,
+        invert: !!invertMask,
+      });
+    }
+
+    smoothingStyle = {
+      WebkitMaskImage: gradientValue,
+      maskImage: gradientValue,
+    } as CSSProperties;
+  }
+
   const maskContent = (
     <div
       {...getStyles('mask', {
@@ -666,10 +743,11 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
           '--mask-linear-center': `${linearCenter}%`,
           ...maskVariables,
           ...transitionStyle,
+          ...smoothingStyle,
         },
       })}
-      data-variant={variant}
-      data-invert={invertMask}
+      data-variant={!maskSmoothing ? variant : undefined}
+      data-invert={!maskSmoothing ? invertMask : undefined}
       data-active={isActive || !hasTransition ? undefined : false}
     >
       {children}
