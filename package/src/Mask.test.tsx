@@ -98,8 +98,9 @@ describe('Mask', () => {
     const root = container.querySelector('[class*="root"]') as HTMLElement;
     expect(root).toBeTruthy();
 
-    // Initially, mask should not be rendered (only root for events)
-    expect(container.querySelector('[data-variant]')).toBeFalsy();
+    // Initially, mask div is present but inactive (data-active="false")
+    const mask = container.querySelector('.mantine-Mask-mask') as HTMLElement;
+    expect(mask.getAttribute('data-active')).toBe('false');
 
     fireEvent.pointerEnter(root);
     expect(onActiveChange).toHaveBeenCalledWith(true);
@@ -184,7 +185,8 @@ describe('Mask', () => {
     expect(root).toBeTruthy();
     expect(root.getAttribute('tabindex')).toBe('0');
 
-    expect(container.querySelector('[data-variant]')).toBeFalsy();
+    const mask = container.querySelector('.mantine-Mask-mask') as HTMLElement;
+    expect(mask.getAttribute('data-active')).toBe('false');
 
     fireEvent.focus(root);
     expect(onActiveChange).toHaveBeenCalledWith(true);
@@ -219,11 +221,12 @@ describe('Mask', () => {
 
     const root = container.querySelector('[class*="root"]') as HTMLElement;
 
-    // Even after hover, mask should not appear because active is controlled to false
+    // Even after hover, mask should be inactive because active is controlled to false
     fireEvent.pointerEnter(root);
-    expect(container.querySelector('[data-variant]')).toBeFalsy();
+    const mask = container.querySelector('.mantine-Mask-mask') as HTMLElement;
+    expect(mask.getAttribute('data-active')).toBe('false');
 
-    // When controlled active is true, mask should appear
+    // When controlled active is true, mask should be active
     rerender(
       <Mask activation="hover" active>
         <div>content</div>

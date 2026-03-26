@@ -77,7 +77,8 @@
 }
 
 .mask[data-active='false'] {
-  opacity: 0;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .mask[data-variant='linear'][data-invert='true'] {
