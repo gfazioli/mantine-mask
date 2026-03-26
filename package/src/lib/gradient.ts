@@ -71,38 +71,36 @@ interface LinearGradientOptions {
 export function generateSmoothedLinearGradient(options: LinearGradientOptions): string {
   const { angle, center, solidSize, fadeSize, invert } = options;
 
-  // Generate a continuous bell curve across the full band width (center ± fadeSize).
-  // The solid zone (center ± solidSize) stays at full opacity; the fade zones use smootherstep.
-  // This avoids the single-point peak artifact when solidSize=0.
+  // Structure: transparent → [eased fade] → solid zone → [eased fade] → transparent
+  // Left fade:  (center - fadeSize) to (center - solidSize)
+  // Solid zone: (center - solidSize) to (center + solidSize)
+  // Right fade: (center + solidSize) to (center + fadeSize)
 
-  const HALF_STEPS = STEPS;
   const stops: string[] = [];
   const outerColor = invert ? 'white' : 'transparent';
+  const innerColor = invert ? 'transparent' : 'white';
 
   // Left transparent zone
   stops.push(`${outerColor} 0`);
   stops.push(`${outerColor} calc(${center} - ${fadeSize})`);
 
-  // Left half: from (center - fadeSize) to center — rising bell curve
-  for (let i = 0; i <= HALF_STEPS; i++) {
-    const t = i / HALF_STEPS; // 0 at outer edge, 1 at center
-    // Map t to position within the left fade zone
-    const pos = `calc(${center} - ${fadeSize} + ${fadeSize} * ${t.toFixed(4)})`;
-    // Opacity: rises from 0 to 1 using smootherstep
+  // Left fade: (center - fadeSize) to (center - solidSize)
+  for (let i = 0; i <= STEPS; i++) {
+    const t = i / STEPS;
+    const pos = `calc(${center} - ${fadeSize} + (${fadeSize} - ${solidSize}) * ${t.toFixed(4)})`;
     const easedOpacity = smootherstep(t);
     const opacity = invert ? 1 - easedOpacity : easedOpacity;
     stops.push(`${toRgba(opacity)} ${pos}`);
   }
 
-  // Solid zone: from (center - solidSize) to (center + solidSize) at full opacity
-  // Only add if solidSize > 0 to avoid duplicate stops at center
-  const innerColor = invert ? 'transparent' : 'white';
+  // Solid zone
+  stops.push(`${innerColor} calc(${center} - ${solidSize})`);
   stops.push(`${innerColor} calc(${center} + ${solidSize})`);
 
-  // Right half: from center to (center + fadeSize) — falling bell curve
-  for (let i = 0; i <= HALF_STEPS; i++) {
-    const t = i / HALF_STEPS; // 0 at center, 1 at outer edge
-    const pos = `calc(${center} + ${fadeSize} * ${t.toFixed(4)})`;
+  // Right fade: (center + solidSize) to (center + fadeSize)
+  for (let i = 0; i <= STEPS; i++) {
+    const t = i / STEPS;
+    const pos = `calc(${center} + ${solidSize} + (${fadeSize} - ${solidSize}) * ${t.toFixed(4)})`;
     const easedOpacity = 1 - smootherstep(t);
     const opacity = invert ? 1 - easedOpacity : easedOpacity;
     stops.push(`${toRgba(opacity)} ${pos}`);
