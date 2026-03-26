@@ -1,0 +1,39 @@
+import { Mask } from '@gfazioli/mantine-mask';
+import { Image } from '@mantine/core';
+import { MantineDemo } from '@mantinex/demo';
+
+function Demo() {
+  return (
+    <Mask withCursorMask maskRadius={{ base: 120, sm: 200, md: 320, lg: 480 }}>
+      <Image
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        alt="Before"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}
+
+const code = `
+import { Mask } from '@gfazioli/mantine-mask';
+import { Image } from '@mantine/core';
+
+function Demo() {
+  return (
+    <Mask withCursorMask maskRadius={{ base: 120, sm: 200, md: 320, lg: 480 }}>
+      <Image
+        src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&auto=format&fit=crop"
+        alt="Before"
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </Mask>
+  );
+}
+`;
+
+export const maskResponsive: MantineDemo = {
+  type: 'code',
+  component: Demo,
+  code: [{ fileName: 'Demo.tsx', code, language: 'tsx' }],
+  defaultExpanded: false,
+};

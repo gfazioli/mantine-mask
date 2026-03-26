@@ -1,6 +1,18 @@
 import { InstallScript } from './components/InstallScript/InstallScript';
 import * as demos from './demos';
 
+## What's new in v0.8
+
+> **Breaking changes:**
+>
+> - Internal utility functions (`clampValue`, `getLinearCenterPercent`, `normalizeFeather`, `parseAngleDegrees`) are no longer exported from the public API. If you were importing them, copy them into your project.
+
+> **New features:**
+>
+> - **Responsive maskRadius** — `maskRadius`, `maskRadiusX`, and `maskRadiusY` now accept Mantine breakpoint objects (`{ base: 120, sm: 200, md: 320 }`). The spotlight size adapts to the viewport using CSS media queries with no JavaScript re-renders.
+> - **New type exports** — `MaskVariant`, `MaskActivation`, and `MaskAnimation` types are now exported for use in your code.
+> - **Bug fixes** — fixed stale closures in document-level pointer tracking, fixed JSDoc default values for `radius` and `clampToBounds`.
+
 ## Installation
 
 <InstallScript packages="@gfazioli/mantine-mask" />
@@ -57,6 +69,13 @@ Use `maskRadius` (or `maskRadiusX`/`maskRadiusY`) to control the spotlight size.
 - **Motion**: `animation`, `easing`
 - **Bounds**: `clampToBounds`, `clampPadding`
 
+## Basic usage
+
+Wrap any content with `Mask` to apply the spotlight effect.
+In this example the spotlight follows the cursor (`withCursorMask`) and reveals the image under the mask.
+
+<Demo data={demos.mask} />
+
 ## Convenience props
 
 You can use convenience props to set common configurations quickly.
@@ -78,13 +97,6 @@ If you need more control, you can still use the lower-level props:
 - `maskRadiusX` and `maskRadiusY` create an elliptical spotlight
 
 <Demo data={demos.convenience} />
-
-## Basic usage
-
-Wrap any content with `Mask` to apply the spotlight effect.
-In this example the spotlight follows the cursor (`withCursorMask`) and reveals the image under the mask.
-
-<Demo data={demos.mask} />
 
 > 💡 Tip: keep the spotlight inside
 >
@@ -132,6 +144,13 @@ If you need an oval shape, use `maskRadiusX` and `maskRadiusY`.
 This is useful for wide headers, cards, or panoramic images.
 
 <Demo data={demos.maskEllipse} />
+
+## Responsive maskRadius
+
+`maskRadius`, `maskRadiusX`, and `maskRadiusY` accept responsive objects with breakpoint keys.
+The spotlight size adapts to the viewport using CSS media queries — no JavaScript re-renders.
+
+<Demo data={demos.maskResponsive} />
 
 ## Variants
 

@@ -26,6 +26,7 @@
   );
 }
 
+/* stylelint-disable scss/operator-no-newline-after */
 .mask[data-variant='linear'] {
   --mask-linear-solid: calc(
     var(--mask-linear-radius, var(--mask-radial-radius, 18rem)) *
@@ -35,6 +36,7 @@
     var(--mask-linear-radius, var(--mask-radial-radius, 18rem)) *
       (var(--mask-transparency-end, 100%) / 100%)
   );
+  /* stylelint-enable scss/operator-no-newline-after */
 
   -webkit-mask-image: linear-gradient(
     var(--mask-angle, 90deg),

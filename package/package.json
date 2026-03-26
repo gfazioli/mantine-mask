@@ -7,14 +7,18 @@
   "license": "MIT",
   "author": "Giovambattista Fazioli <giovambattista.fazioli@gmail.com>",
   "keywords": [
+    "mantine",
+    "mantine-ui",
+    "mantine-v8",
+    "react",
+    "react-component",
+    "typescript",
     "extension",
+    "component",
     "mask",
     "spotlight",
     "overlay",
-    "mantine",
-    "react",
-    "react-component",
-    "typescript"
+    "css-mask"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/esm/index.mjs",
@@ -37,7 +41,6 @@
   "peerDependencies": {
     "@mantine/core": ">=7.0.0",
     "@mantine/hooks": ">=7.0.0",
-    "@tabler/icons-react": "^3.34.0",
     "react": "^18.x || ^19.x",
     "react-dom": "^18.x || ^19.x"
   },
