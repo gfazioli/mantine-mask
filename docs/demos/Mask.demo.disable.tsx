@@ -6,9 +6,9 @@ function Demo(props: MaskProps) {
   return (
     <Stack>
       {props.active && (
-        <Alert title="Your credits are running low" color="yellow" variant="light">
+        <Alert title="Your credits are running low" color="orange" variant="light">
           Update your payment method to continue creating videos without interruptions.
-          <Button variant="outline" size="xs" ml="md">
+          <Button variant="outline" color="blue" size="xs" radius="sm" ml="md">
             Update Payment Method
           </Button>
         </Alert>
@@ -43,9 +43,9 @@ function Demo(props: MaskProps) {
   return (
     <Stack>
       {props.active && (
-        <Alert title="Your credits are running low" color="yellow" variant="light">
+        <Alert title="Your credits are running low" color="orange" variant="light">
           Update your payment method to continue creating videos without interruptions.
-          <Button variant="outline" size="xs" ml="md">
+          <Button variant="outline" color="blue" size="xs" radius="sm" ml="md">
             Update Payment Method
           </Button>
         </Alert>

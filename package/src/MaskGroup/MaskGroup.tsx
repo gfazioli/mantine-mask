@@ -31,7 +31,7 @@ export type MaskGroupFactory = Factory<{
 
 const defaultProps: Partial<MaskGroupProps> = {};
 
-export const MaskGroup = factory<MaskGroupFactory>((_props, ref) => {
+export const MaskGroup = factory<MaskGroupFactory>((_props) => {
   const props = useProps('MaskGroup', defaultProps, _props);
   const { children, classNames, style, styles, unstyled, vars, className, ...others } = props;
 
@@ -69,7 +69,6 @@ export const MaskGroup = factory<MaskGroupFactory>((_props, ref) => {
   return (
     <MaskGroupContext.Provider value={{ ...position, pointerInside }}>
       <Box
-        ref={ref}
         {...getStyles('root')}
         onPointerMove={handlePointerMove}
         onPointerEnter={handlePointerEnter}
