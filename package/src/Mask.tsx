@@ -221,14 +221,15 @@ const varsResolver = createVarsResolver<MaskFactory>(
       mask: {
         '--mask-transparency-end': computedEnd !== undefined ? `${computedEnd}%` : undefined,
         '--mask-transparency-start': computedStart !== undefined ? `${computedStart}%` : undefined,
-        '--mask-opacity': maskOpacity.toString(),
+        '--mask-opacity': maskOpacity?.toString(),
       },
     };
   }
 );
 
-export const Mask = factory<MaskFactory>((_props, ref) => {
-  const props = useProps('Mask', defaultProps, _props);
+export const Mask = factory<MaskFactory>((_props) => {
+  const { ref, ...restProps } = _props as typeof _props & { ref?: React.Ref<HTMLDivElement> };
+  const props = useProps('Mask', defaultProps, restProps);
 
   const {
     variant,
@@ -412,8 +413,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
         const dx = cursorPosition.x - prev.x;
         const dy = cursorPosition.y - prev.y;
 
-        const nextX = Math.round(prev.x + dx * easing);
-        const nextY = Math.round(prev.y + dy * easing);
+        const nextX = Math.round(prev.x + dx * (easing ?? 0.15));
+        const nextY = Math.round(prev.y + dy * (easing ?? 0.15));
 
         if (nextX === prev.x && nextY === prev.y) {
           return prev;
@@ -451,8 +452,8 @@ export const Mask = factory<MaskFactory>((_props, ref) => {
         const dx = staticTargetRef.current.x - prev.x;
         const dy = staticTargetRef.current.y - prev.y;
 
-        const nextX = Number((prev.x + dx * easing).toFixed(3));
-        const nextY = Number((prev.y + dy * easing).toFixed(3));
+        const nextX = Number((prev.x + dx * (easing ?? 0.15)).toFixed(3));
+        const nextY = Number((prev.y + dy * (easing ?? 0.15)).toFixed(3));
 
         if (nextX === prev.x && nextY === prev.y) {
           return prev;

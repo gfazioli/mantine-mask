@@ -3,20 +3,20 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project
-`@gfazioli/mantine-mask` — A Mantine extension component that applies a cursor-follow or static spotlight using CSS masks (radial or linear gradients), revealing content inside the spotlight and softly fading the outside. Supports animation (lerp/instant), activation modes (always/hover/focus/pointer), inversion, elliptical radii, boundary clamping, and document-level pointer tracking.
+`@gfazioli/mantine-mask` — A Mantine 9 extension component that applies a cursor-follow or static spotlight using CSS masks (radial or linear gradients), revealing content inside the spotlight and softly fading the outside. Supports animation (lerp/instant), activation modes (always/hover/focus/pointer), inversion, elliptical radii, boundary clamping, and document-level pointer tracking.
 
 ## Commands
 | Command | Purpose |
 |---------|---------|
 | `yarn build` | Build the npm package via Rollup |
 | `yarn dev` | Start the Next.js docs dev server (port 9281) |
-| `yarn test` | Full test suite (syncpack + prettier + typecheck + lint + jest) |
+| `yarn test` | Full test suite (syncpack + oxfmt + typecheck + lint + jest) |
 | `yarn jest` | Run only Jest unit tests |
 | `yarn docgen` | Generate component API docs (docgen.json) |
 | `yarn docs:build` | Build the Next.js docs site for production |
 | `yarn docs:deploy` | Build and deploy docs to GitHub Pages |
 | `yarn lint` | Run ESLint + Stylelint |
-| `yarn prettier:write` | Format all files with Prettier |
+| `yarn format:write` | Format all files with oxfmt |
 | `yarn storybook` | Start Storybook dev server |
 | `yarn clean` | Remove build artifacts |
 | `yarn release:patch` | Bump patch version and deploy docs |
@@ -131,7 +131,7 @@ All rules include both standard `mask-image` and `-webkit-mask-image` for browse
 Jest with `jsdom` environment, `esbuild-jest` transform, CSS mocked via `identity-obj-proxy`. Component tests use `@mantine-tests/core` render helper. Test file: `package/src/Mask.test.tsx`.
 
 ## Ecosystem
-This repo is part of the Mantine Extensions ecosystem, derived from the `mantine-base-component` template. See the workspace CLAUDE.md at `/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/CLAUDE.md` for:
+This repo is part of the Mantine Extensions ecosystem, derived from the `mantine-base-component` template. See the workspace `CLAUDE.md` (in the parent directory) for:
 - Development checklist (code -> test -> build -> docs -> release)
 - Cross-cutting patterns (compound components, responsive CSS, GitHub sync)
 - Update packages workflow
