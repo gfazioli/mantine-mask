@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   filterProps,
   getBaseValue,
@@ -10,6 +9,7 @@ import {
   type MantineBreakpoint,
   type StyleProp,
 } from '@mantine/core';
+import React from 'react';
 
 interface MaskMediaVariablesProps {
   maskRadius?: StyleProp<number | string>;

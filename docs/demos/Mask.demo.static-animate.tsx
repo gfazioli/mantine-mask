@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Mask } from '@gfazioli/mantine-mask';
 import { Button, Group, Image, Slider, Stack, Text } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import { useState } from 'react';
 
 function Demo() {
   const [position, setPosition] = useState({ x: 25, y: 35 });

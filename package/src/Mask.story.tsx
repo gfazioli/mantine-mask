@@ -1,5 +1,5 @@
-import React from 'react';
 import { Image, Paper, Text } from '@mantine/core';
+import React from 'react';
 import { Mask, type MaskProps } from './Mask';
 
 export default {

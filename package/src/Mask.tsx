@@ -1,4 +1,3 @@
-import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   createVarsResolver,
@@ -15,6 +14,7 @@ import {
   type StyleProp,
 } from '@mantine/core';
 import { useMergedRef } from '@mantine/hooks';
+import React, { CSSProperties, useCallback, useEffect, useRef, useState } from 'react';
 import {
   clampValue,
   generateSmoothedLinearGradient,
