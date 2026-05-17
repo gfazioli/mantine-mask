@@ -1,7 +1,7 @@
-import { useState } from 'react';
 import { Mask } from '@gfazioli/mantine-mask';
 import { Image, Stack, Switch, Text } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import { useState } from 'react';
 
 function Demo() {
   const [bg, setBg] = useState(false);

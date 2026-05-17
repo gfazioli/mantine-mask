@@ -1,4 +1,3 @@
-import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
   factory,
@@ -8,6 +7,7 @@ import {
   type BoxProps,
   type Factory,
 } from '@mantine/core';
+import React, { useCallback, useRef, useState } from 'react';
 import { MaskGroupContext } from './MaskGroup.context';
 import classes from './MaskGroup.module.css';
 
