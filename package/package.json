@@ -1,6 +1,6 @@
 {
   "name": "@gfazioli/mantine-mask",
-  "version": "2.0.8",
+  "version": "2.0.9",
   "description": "A Mantine extension component that applies a cursor‑follow or static spotlight using CSS masks, revealing content inside the spotlight and softly fading the outside.",
   "homepage": "https://gfazioli.github.io/mantine-mask/",
   "packageManager": "yarn@4.0.1",
