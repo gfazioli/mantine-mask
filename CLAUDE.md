@@ -94,7 +94,7 @@ Supports controlled mode via `active` prop + `onActiveChange` callback. When ina
 `Mask.Group` wraps multiple `Mask` components and shares cursor position via React Context (`MaskGroupContext`). Each child `Mask` keeps its own configuration but follows the same pointer. The group tracks `pointerMove` on its root Box and distributes `clientX`/`clientY` to children via `useMaskGroupContext()`.
 
 ### Gradient smoothing
-`maskSmoothing` generates eased multi-stop gradients (using `smootherstep` function with 12 stops) that eliminate the hard edge/ring artifact in CSS gradients. Implemented in `lib/gradient.ts` with `generateSmoothedRadialGradient` and `generateSmoothedLinearGradient`. When active, the `mask-image` is set via JS inline style instead of CSS variables.
+`maskSmoothing` generates eased multi-stop gradients (using `smootherstep` function with 12 stops) that eliminate the hard edge/ring artifact in CSS gradients. Implemented in `package/src/lib/gradient.ts` with `generateSmoothedRadialGradient` and `generateSmoothedLinearGradient`. When active, the `mask-image` is set via JS inline style instead of CSS variables.
 
 ### Utility library (`lib/`)
 - `clampValue`: Math.min/max with midpoint fallback when max < min
